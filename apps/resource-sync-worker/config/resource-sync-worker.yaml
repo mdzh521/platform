@@ -1,0 +1,9 @@
+# Resource Sync Worker default config.
+# Edit this file directly, or override any field with environment variables.
+
+worker_name: resource-sync-worker
+listen_addr: ":8092"
+poll_interval: 5s
+
+backend_base_url: http://backend:8080
+backend_token: runner-dev-token

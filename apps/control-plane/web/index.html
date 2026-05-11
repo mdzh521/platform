@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Platform Center</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #0f172a;
+        --panel: rgba(15, 23, 42, 0.88);
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #38bdf8;
+        --border: rgba(148, 163, 184, 0.2);
+      }
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(56, 189, 248, 0.24), transparent 36%),
+          radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.18), transparent 32%),
+          var(--bg);
+        color: var(--text);
+      }
+      body {
+        display: grid;
+        place-items: center;
+        padding: 32px;
+      }
+      .card {
+        width: min(760px, 100%);
+        padding: 28px;
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        background: var(--panel);
+        box-shadow: 0 30px 80px rgba(2, 6, 23, 0.45);
+      }
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 12px;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(32px, 4vw, 52px);
+        line-height: 1.02;
+      }
+      p {
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 16px;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <p class="eyebrow">Embedded Mode</p>
+      <h1>旧嵌入式前端已降级为只读入口</h1>
+      <p>当前主前端已经迁移到外部的 <a href="/">web-console</a>。这个页面只保留给历史 embedded mode 使用，不再挂载旧的脚本入口。</p>
+    </main>
+  </body>
+</html>

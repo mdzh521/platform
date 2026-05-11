@@ -1,0 +1,19 @@
+# Terraform Runner default config.
+# Edit this file directly, or override any field with environment variables.
+
+runner_name: terraform-runner
+listen_addr: ":8091"
+poll_interval: 5s
+heartbeat_interval: 30s
+
+backend_base_url: http://backend:8080
+backend_token: runner-dev-token
+
+workspace_root: /runner-data/jobs
+provider_cache_dir: /runner-data/plugin-cache
+template_root: /app/templates
+
+max_parallel_jobs: 2
+workspace_success_ttl: 24h
+workspace_failure_ttl: 72h
+workspace_destroyed_ttl: 1h

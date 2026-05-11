@@ -1,0 +1,6 @@
+worker_name: cluster-addon-worker
+listen_addr: :8095
+poll_interval: 10s
+heartbeat_interval: 20s
+backend_base_url: http://127.0.0.1:18080
+backend_token: runner-dev-token

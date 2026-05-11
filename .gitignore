@@ -1,0 +1,20 @@
+.codex/
+.superpowers/
+.DS_Store
+
+# Local runtime artifacts
+*.log
+*.pid
+*.out
+
+# Common env files
+.env
+.env.local
+
+# Terraform local caches
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Local build caches
+.cache/

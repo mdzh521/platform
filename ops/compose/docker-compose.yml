@@ -1,0 +1,146 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: platform-center-mysql
+    environment:
+      MYSQL_DATABASE: backend_center
+      MYSQL_USER: backend
+      MYSQL_PASSWORD: backend123
+      MYSQL_ROOT_PASSWORD: root123456
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -proot123456 --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: platform-center-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ../../apps/control-plane
+    container_name: platform-center-backend
+    environment:
+      APP_CONFIG_FILE: /app/config/platform-center.yaml
+      FRONTEND_MODE: external
+      INTERNAL_RUNNER_TOKEN: runner-dev-token
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "18080:8080"
+
+  frontend:
+    build:
+      context: ../../apps/web-console
+    container_name: platform-center-frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+  terraform-runner:
+    build:
+      context: ../../apps/terraform-runner
+    container_name: platform-center-terraform-runner
+    environment:
+      RUNNER_HEARTBEAT_INTERVAL: 2s
+    depends_on:
+      - backend
+    ports:
+      - "18091:8091"
+    volumes:
+      - terraform_runner_data:/runner-data
+
+  resource-sync-worker:
+    build:
+      context: ../../apps/resource-sync-worker
+    container_name: platform-center-resource-sync-worker
+    depends_on:
+      - backend
+    ports:
+      - "18092:8092"
+
+  machine-enrollment-worker:
+    build:
+      context: ../../apps/machine-enrollment-worker
+    container_name: platform-center-machine-enrollment-worker
+    depends_on:
+      - backend
+    environment:
+      BACKEND_API_BASE_URL: http://platform-center-backend:8080
+      BACKEND_API_TOKEN: runner-dev-token
+    ports:
+      - "18093:8093"
+
+  cluster-enrollment-worker:
+    build:
+      context: ../../apps/cluster-enrollment-worker
+    container_name: platform-center-cluster-enrollment-worker
+    depends_on:
+      - backend
+    environment:
+      BACKEND_API_BASE_URL: http://platform-center-backend:8080
+      BACKEND_API_TOKEN: runner-dev-token
+      AWS_REGION: ${AWS_REGION:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
+      AWS_CONFIG_FILE: /root/.aws/config
+      AWS_SHARED_CREDENTIALS_FILE: /root/.aws/credentials
+      ALICLOUD_ACCESS_KEY: ${ALICLOUD_ACCESS_KEY:-}
+      ALICLOUD_SECRET_KEY: ${ALICLOUD_SECRET_KEY:-}
+      ALICLOUD_REGION_ID: ${ALICLOUD_REGION_ID:-}
+      ALIBABA_CLOUD_ACCESS_KEY_ID: ${ALIBABA_CLOUD_ACCESS_KEY_ID:-}
+      ALIBABA_CLOUD_ACCESS_KEY_SECRET: ${ALIBABA_CLOUD_ACCESS_KEY_SECRET:-}
+    ports:
+      - "18094:8094"
+    volumes:
+      - ${HOME}/.aws:/root/.aws:ro
+      - ${HOME}/.aliyun:/root/.aliyun:ro
+
+  cluster-addon-worker:
+    build:
+      context: ../../apps/cluster-addon-worker
+    container_name: platform-center-cluster-addon-worker
+    depends_on:
+      - backend
+    environment:
+      BACKEND_API_BASE_URL: http://platform-center-backend:8080
+      BACKEND_API_TOKEN: runner-dev-token
+      AWS_REGION: ${AWS_REGION:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
+      AWS_CONFIG_FILE: /root/.aws/config
+      AWS_SHARED_CREDENTIALS_FILE: /root/.aws/credentials
+    ports:
+      - "18095:8095"
+    volumes:
+      - ${HOME}/.aws:/root/.aws:ro
+
+volumes:
+  mysql_data:
+  redis_data:
+  terraform_runner_data:

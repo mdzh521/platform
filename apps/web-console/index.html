@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Platform Center</title>
+    <link rel="stylesheet" href="/assets/vendor/xterm.css?v=20260425-machine-terminal-input-fix-2" />
+    <link rel="stylesheet" href="/assets/styles.css?v=20260425-machine-terminal-input-fix-2" />
+  </head>
+  <body>
+    <div id="login-screen" class="login-shell">
+      <div class="login-card">
+        <div class="login-hero">
+          <div class="brand-mark">PC</div>
+          <div class="login-copy">
+            <p class="eyebrow">Platform Center</p>
+            <h1>把集群、机器和系统配置收敛到同一个控制台</h1>
+            <p>不是把功能堆在一页，而是把运维入口整理成真正可连续工作的产品工作台。</p>
+          </div>
+          <div class="login-highlights">
+            <article class="login-highlight-card">
+              <span class="muted-label">Cluster Workbench</span>
+              <strong>从集群范围到工作负载排障的连续视图</strong>
+              <p>接入、同步、资源浏览和终端排障放在一条清晰路径里。</p>
+            </article>
+            <article class="login-highlight-card">
+              <span class="muted-label">Machine Workbench</span>
+              <strong>按资产、凭据和会话组织连接工作区</strong>
+              <p>机器不再只是列表记录，而是带连接、审计和文件能力的操作对象。</p>
+            </article>
+            <article class="login-highlight-card">
+              <span class="muted-label">System Governance</span>
+              <strong>用户、角色和平台配置保持独立治理</strong>
+              <p>功能层和治理层拆开，避免后台越做越乱。</p>
+            </article>
+          </div>
+        </div>
+        <form id="login-form" class="panel form-grid">
+          <div class="login-form-copy">
+            <p class="eyebrow">Workspace Access</p>
+            <h3>进入控制台</h3>
+            <p>默认管理员账号已预置，可直接进入查看当前模块。</p>
+          </div>
+          <label><span>用户名</span><input name="username" autocomplete="username" required /></label>
+          <label><span>密码</span><input name="password" type="password" autocomplete="current-password" required /></label>
+          <button type="submit" class="primary-button">登录</button>
+          <p id="login-error" class="error-text hidden"></p>
+        </form>
+      </div>
+    </div>
+
+    <div id="app-shell" class="app-shell hidden">
+      <main class="workspace">
+        <header class="topbar">
+          <div class="topbar-left">
+            <div class="brand-mark small">PC</div>
+            <div>
+              <p class="eyebrow">Platform Center</p>
+              <h1 id="module-title">总览</h1>
+              <p class="topbar-context">统一查看交付、集群、机器与治理状态。</p>
+            </div>
+          </div>
+          <div class="topbar-meta">
+            <span id="permission-badge" class="permission-badge">0 项权限</span>
+            <span id="current-user-name" class="current-user-name">-</span>
+            <button id="logout-button" class="ghost-button">退出</button>
+          </div>
+        </header>
+
+        <nav class="top-tabs">
+          <button class="top-tab active" data-top-module="overview">总览</button>
+          <button class="top-tab" data-top-module="cloud">交付网络</button>
+          <button class="top-tab" data-top-module="business">集群工作台</button>
+          <button class="top-tab" data-top-module="machine">机器工作台</button>
+          <button class="top-tab" data-top-module="system">系统治理</button>
+        </nav>
+
+        <section id="top-module-overview" class="top-module">
+          <section class="overview-shell">
+            <div class="page-header page-header-overview">
+              <div class="page-header-copy">
+                <p class="eyebrow">Overview</p>
+                <h2>把交付、集群、机器和治理收敛到同一个工作起点</h2>
+                <p>先看平台现在是否稳定，再决定进入哪条操作域继续工作。首页不再只是介绍页，而是统一的运维工作台入口。</p>
+                <div class="page-header-actions">
+                  <button class="primary-button" data-top-module="cloud">进入交付网络</button>
+                  <button class="ghost-button" data-top-module="business">进入集群工作台</button>
+                  <button class="ghost-button" data-top-module="machine">进入机器工作台</button>
+                </div>
+              </div>
+              <div class="page-header-side">
+                <article class="signal-card signal-card-strong">
+                  <span class="muted-label">Current Focus</span>
+                  <strong>先收口产品壳层，再把主工作域变成连续操作界面</strong>
+                  <p>当前迭代优先提升导航层级、页面节奏和高频操作入口，不动底层数据链路。</p>
+                </article>
+                <article class="signal-card">
+                  <span class="muted-label">Operator Lens</span>
+                  <strong>平台 / 运维工程师优先</strong>
+                  <p>治理能力保留，但退到低频入口，不再压过交付、集群和机器这三类日常工作。</p>
+                </article>
+              </div>
+            </div>
+
+            <div id="overview-summary-grid" class="overview-summary-grid"></div>
+
+            <div id="overview-ops-grid" class="overview-ops-grid">
+              <article class="overview-domain-card">
+                <span class="muted-label">交付网络</span>
+                <strong>云账号、Foundation Network、交付对象和执行结果放进同一条路径</strong>
+                <p>先锁定交付上下文，再发起网络、主机和集群交付，不再让任务和资源结果分散在多个入口里。</p>
+                <button class="ghost-button" data-top-module="cloud">查看交付域</button>
+              </article>
+              <article class="overview-domain-card">
+                <span class="muted-label">集群工作台</span>
+                <strong>从集群范围选择进入命名空间、工作负载和资源排障</strong>
+                <p>强调“先选范围，再操作资源”的路径，把集群资源浏览做成正式工作台，而不是一组并列后台页面。</p>
+                <button class="ghost-button" data-top-module="business">查看集群域</button>
+              </article>
+              <article class="overview-domain-card">
+                <span class="muted-label">机器工作台</span>
+                <strong>资产、凭据、会话和终端聚合为持续连接工作区</strong>
+                <p>机器不再只是资产表，而是带连接、审计和终端上下文的统一操作入口。</p>
+                <button class="ghost-button" data-top-module="machine">查看机器域</button>
+              </article>
+            </div>
+
+            <div id="overview-activity-grid" class="overview-activity-grid">
+              <article class="panel activity-panel">
+                <div class="panel-header panel-header-compact">
+                  <div>
+                    <p class="eyebrow">Recent Work</p>
+                    <h4>最近任务</h4>
+                  </div>
+                </div>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <strong>交付网络任务</strong>
+                    <p>优先看 Foundation Network 和 Delivery Job 的执行结果，再决定是否继续扩展资源。</p>
+                  </div>
+                  <div class="activity-item">
+                    <strong>集群健康核查</strong>
+                    <p>从集群工作台进入命名空间和工作负载层，逐级确认同步状态与资源健康。</p>
+                  </div>
+                </div>
+              </article>
+              <article class="panel activity-panel">
+                <div class="panel-header panel-header-compact">
+                  <div>
+                    <p class="eyebrow">Recent Access</p>
+                    <h4>最近会话</h4>
+                  </div>
+                </div>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <strong>机器连接与终端</strong>
+                    <p>最近的 SSH / SFTP 活动会在机器工作台和审计视图之间形成连续上下文。</p>
+                  </div>
+                  <div class="activity-item">
+                    <strong>凭据与资产联动</strong>
+                    <p>凭据库、资产列表和终端入口保持相邻，让日常连接成本更低。</p>
+                  </div>
+                </div>
+              </article>
+              <article class="panel activity-panel">
+                <div class="panel-header panel-header-compact">
+                  <div>
+                    <p class="eyebrow">Governance</p>
+                    <h4>待处理事项</h4>
+                  </div>
+                </div>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <strong>治理域后置但不缺席</strong>
+                    <p>用户、角色、身份源和系统设置继续保留在系统治理中，避免侵占主操作域首屏。</p>
+                  </div>
+                  <div class="activity-item">
+                    <strong>继续精修深层详情页</strong>
+                    <p>这轮先重做壳层和首屏，后续再把详情页、抽屉和弹窗逐步统一到新视觉系统。</p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section id="top-module-cloud" class="top-module hidden">
+          <section class="cloud-stage-shell">
+            <div id="delivery-page-header" class="page-header page-header-delivery">
+              <div class="page-header-copy">
+                <p class="eyebrow">Delivery Network</p>
+                <h2>先收口交付上下文，再扩展网络、主机和集群</h2>
+                <p>这里负责把云账号、Foundation Network、交付对象和任务结果放到一条连续路径里。交付对象不再脱离底座单独创建。</p>
+                <div class="page-header-actions">
+                  <button id="cloud-create-account" class="primary-button">新增云账号</button>
+                  <button id="cloud-create-network-plan" class="ghost-button">创建 Foundation Network</button>
+                  <button id="cloud-refresh" class="ghost-button">刷新阶段状态</button>
+                </div>
+              </div>
+              <div class="page-header-side">
+                <div id="cloud-summary-cards" class="cloud-summary-grid"></div>
+              </div>
+            </div>
+
+            <section id="delivery-stage-strip" class="business-stage-strip">
+              <article class="stage-note-card">
+                <span class="muted-label">Stage 01</span>
+                <strong>交付上下文</strong>
+                <p>先确认云账号、区域和环境归属，避免不同 provider 和 project 的基础设施串在一起。</p>
+              </article>
+              <article class="stage-note-card">
+                <span class="muted-label">Stage 02</span>
+                <strong>Foundation Network</strong>
+                <p>基础网络是交付底座，后续主机、Bastion 和集群对象都从这里向外生长。</p>
+              </article>
+              <article class="stage-note-card">
+                <span class="muted-label">Stage 03</span>
+                <strong>任务与结果</strong>
+                <p>先看 Delivery Job 的执行状态，再在同一视角里核对资源回填结果和后续清理动作。</p>
+              </article>
+            </section>
+
+            <div class="cloud-stage-layout">
+              <div class="cloud-stage-main">
+                <section class="panel cloud-stage-panel cloud-stage-panel-foundation">
+                  <div class="section-intro">
+                    <div>
+                      <p class="eyebrow">Context + Foundation</p>
+                      <h3>先锁定交付上下文，再建立底层网络</h3>
+                    </div>
+                  </div>
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">Context + Foundation</p>
+                      <h4>先定云账号上下文，再建立 Foundation Network</h4>
+                      <p>这里负责把 provider、云账号、区域和基础网络收口。没有 Foundation Network，后面的服务器、Ops Bastion、Cluster 都不能脱离它单独创建。</p>
+                    </div>
+                  </div>
+                  <div id="cloud-foundation-status" class="cloud-stage-status-grid"></div>
+                  <div class="cloud-stage-panel-grid">
+                    <article class="cloud-stage-subpanel">
+                      <div class="panel-header panel-header-compact">
+                        <div>
+                          <h4>云账号</h4>
+                          <p>这里是交付上下文，不回显敏感信息。Foundation Network 和后续 Delivery 都会绑定到这里的 provider、账号和区域。</p>
+                        </div>
+                      </div>
+                      <div id="cloud-accounts-table" class="table-shell compact-table-shell"></div>
+                    </article>
+                    <article class="cloud-stage-subpanel">
+                      <div class="panel-header panel-header-compact">
+                        <div>
+                          <h4>Foundation Network</h4>
+                          <p>基础网络在这里独立建和看。每条网络都绑定云账号和 provider，后面的服务器、Ops Bastion、Cluster 都从它发起。</p>
+                        </div>
+                        <div class="action-row">
+                          <button type="button" class="ghost-button" data-cloud-shortcut="scroll-delivery">查看交付对象</button>
+                          <button type="button" class="ghost-button" data-cloud-shortcut="scroll-jobs">查看任务结果</button>
+                        </div>
+                      </div>
+                      <div id="cloud-network-plans-table" class="table-shell compact-table-shell"></div>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="panel cloud-stage-panel cloud-stage-panel-delivery">
+                  <div class="section-intro">
+                    <div>
+                      <p class="eyebrow">Delivery Objects</p>
+                      <h3>交付对象从 Foundation Network 发起，而不是脱离底座单独创建</h3>
+                    </div>
+                  </div>
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">Delivery Objects</p>
+                      <h4>机器与交付对象从 Foundation Network 发起</h4>
+                      <p>服务器自动化、Ops Bastion、Cluster 是相对独立的交付对象，但都必须消费某条 Foundation Network。推荐直接从网络卡片进入创建，不要脱离底座单独起任务。</p>
+                    </div>
+                  </div>
+                  <div class="cloud-stage-panel-grid cloud-stage-panel-grid-wide">
+                    <article class="cloud-stage-subpanel">
+                      <div class="panel-header panel-header-compact">
+                        <div>
+                          <h4>可执行蓝图</h4>
+                          <p>这里只是能力清单。真正创建服务器或 Bastion，优先从具体的 Foundation Network 卡片进入。</p>
+                        </div>
+                        <div class="action-row">
+                          <button type="button" class="ghost-button" data-cloud-shortcut="scroll-networks">从网络选择</button>
+                          <button type="button" class="ghost-button" data-cloud-shortcut="create-job">创建通用 Delivery Job</button>
+                        </div>
+                      </div>
+                      <div id="cloud-blueprints-table" class="table-shell compact-table-shell"></div>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="panel cloud-stage-panel cloud-stage-panel-operations">
+                  <div class="section-intro">
+                    <div>
+                      <p class="eyebrow">Execution</p>
+                      <h3>把任务状态和资源结果放回同一条执行链路里</h3>
+                    </div>
+                  </div>
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">执行结果</p>
+                      <h4>任务和资源合并看</h4>
+                      <p>任务创建后会自动执行。先看任务状态，再在同一块里直接看这条任务对应的资源结果，不再分成两个区块来回切换。</p>
+                    </div>
+                  </div>
+                  <div class="cloud-stage-panel-grid cloud-stage-panel-grid-wide">
+                    <article id="cloud-panel-jobs" class="cloud-stage-subpanel">
+                      <div class="panel-header panel-header-compact">
+                        <div>
+                          <h4>任务与资源</h4>
+                          <p>点“详情”看执行日志、输出和回填状态；下方直接看这条任务对应的资源结果和清理入口。</p>
+                        </div>
+                        <div class="action-row">
+                          <button type="button" class="ghost-button" data-cloud-shortcut="scroll-networks">返回基础网络</button>
+                        </div>
+                      </div>
+                      <div id="cloud-jobs-table" class="table-shell compact-table-shell"></div>
+                      <div class="panel-header panel-header-compact">
+                        <div>
+                          <h4>资源结果</h4>
+                          <p>这里直接承接上面的任务视图，按同一条任务展示最终回填的云资源。</p>
+                        </div>
+                      </div>
+                      <div id="cloud-resources-table" class="table-shell compact-table-shell"></div>
+                    </article>
+                  </div>
+                </section>
+              </div>
+
+              <aside class="cloud-stage-sidebar">
+                <section class="panel cloud-stage-sidebar-panel cloud-stage-sidebar-panel-accent">
+                  <div class="panel-header panel-header-compact">
+                    <div>
+                      <h4>当前状态</h4>
+                      <p>这里只保留下一步、当前阻塞和最近结果。</p>
+                    </div>
+                  </div>
+                  <div id="cloud-current-stage" class="cloud-current-stage"></div>
+                </section>
+                <section class="panel cloud-stage-sidebar-panel">
+                  <div class="panel-header panel-header-compact">
+                    <div>
+                      <h4>Project Graph</h4>
+                      <p>按 Project 看 environment、stack、foundation、机器和集群之间的关系。</p>
+                    </div>
+                    <div class="action-row">
+                      <select id="cloud-graph-project-filter"></select>
+                      <button id="cloud-graph-refresh" type="button" class="ghost-button">刷新图谱</button>
+                    </div>
+                  </div>
+                  <div id="cloud-project-graph" class="table-shell compact-table-shell"></div>
+                </section>
+              </aside>
+            </div>
+          </section>
+        </section>
+
+        <section id="top-module-business" class="top-module hidden">
+          <section id="clusters-page-header" class="page-header page-header-clusters">
+            <div class="page-header-copy">
+              <p class="eyebrow">Cluster Workbench</p>
+              <h2>先锁定集群范围，再进入命名空间、工作负载和资源排障</h2>
+              <p>集群工作台围绕“范围选择 -> 资源浏览 -> 详情钻取 -> 运维动作”展开，让排障路径更连续。</p>
+              <p id="business-context" class="business-context">当前页：集群列表</p>
+              <div class="page-header-actions">
+                <button id="business-open-create-cluster" class="primary-button">接入新集群</button>
+                <button id="business-refresh-all" class="ghost-button">刷新业务数据</button>
+                <label class="toggle-chip">
+                  <input id="hide-system-namespaces" type="checkbox" />
+                  <span>只看业务命名空间</span>
+                </label>
+              </div>
+            </div>
+            <div class="page-header-side">
+              <div id="k8s-summary-cards" class="summary-grid"></div>
+            </div>
+          </section>
+
+          <section id="clusters-workbench-grid" class="clusters-workbench-grid">
+            <aside id="clusters-insight-rail" class="clusters-insight-rail">
+              <article class="panel cluster-rail-card">
+                <div class="panel-header panel-header-compact">
+                  <div>
+                    <p class="eyebrow">Working Model</p>
+                    <h4>工作台节奏</h4>
+                  </div>
+                </div>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <strong>先锁范围</strong>
+                    <p>先从集群列表建立上下文，再进入命名空间、工作负载和资源对象层。</p>
+                  </div>
+                  <div class="activity-item">
+                    <strong>逐级钻取</strong>
+                    <p>详情页只承接当前层的下一步动作，避免让表格、详情和运维操作同时挤在一个视图里。</p>
+                  </div>
+                </div>
+              </article>
+              <article class="panel cluster-rail-card">
+                <div class="panel-header panel-header-compact">
+                  <div>
+                    <p class="eyebrow">Cluster Focus</p>
+                    <h4>当前关注点</h4>
+                  </div>
+                </div>
+                <div class="scope-badge-row">
+                  <span class="scope-badge">集群接入</span>
+                  <span class="scope-badge">同步状态</span>
+                  <span class="scope-badge">命名空间治理</span>
+                  <span class="scope-badge">资源排障</span>
+                </div>
+              </article>
+            </aside>
+
+            <div class="clusters-workbench-main">
+              <nav class="business-nav">
+                <button class="business-nav-item active" data-business-view="clusters">集群列表</button>
+                <button class="business-nav-item" data-business-view="namespaces">命名空间</button>
+                <button class="business-nav-item" data-business-view="workloads">工作负载</button>
+                <button class="business-nav-item" data-business-view="resources">资源浏览</button>
+              </nav>
+
+              <section id="cluster-list-stage" class="business-stage-strip">
+                <article class="stage-note-card">
+                  <span class="muted-label">Stage 01</span>
+                  <strong>接入与同步</strong>
+                  <p>先确认集群接入、认证和同步状态，再决定是否继续下钻到命名空间层。</p>
+                </article>
+                <article class="stage-note-card">
+                  <span class="muted-label">Stage 02</span>
+                  <strong>范围与治理</strong>
+                  <p>命名空间层负责锁范围和看治理状态，避免在工作负载层才开始补上下文。</p>
+                </article>
+                <article class="stage-note-card">
+                  <span class="muted-label">Stage 03</span>
+                  <strong>排障与资源</strong>
+                  <p>工作负载和资源浏览承接具体排障动作，让详情页只负责当前对象的下一步操作。</p>
+                </article>
+              </section>
+
+              <section id="business-page-clusters" class="business-page active">
+                <section class="panel">
+                  <div class="section-intro">
+                    <div>
+                      <p class="eyebrow">Cluster Inventory</p>
+                      <h3>从已接入集群建立当前操作上下文</h3>
+                    </div>
+                    <div class="scope-badge-row">
+                      <span class="scope-badge">接入</span>
+                      <span class="scope-badge">认证</span>
+                      <span class="scope-badge">同步</span>
+                    </div>
+                  </div>
+                  <div class="panel-header">
+                    <div>
+                      <h4>集群列表</h4>
+                      <p>接入、检测和同步都从这里开始。</p>
+                    </div>
+                    <div class="action-row">
+                      <input id="search-clusters" class="toolbar-input" placeholder="搜索集群名称、环境、地址" />
+                      <button id="open-create-cluster" class="primary-button">接入集群</button>
+                      <button id="refresh-clusters" class="ghost-button">刷新</button>
+                    </div>
+                  </div>
+                  <div id="cluster-list-page" class="workload-page-block">
+                    <div id="clusters-table" class="table-shell"></div>
+                  </div>
+                  <div id="cluster-detail-page" class="workload-page-block hidden">
+                    <div class="panel-header panel-header-nested">
+                      <div>
+                        <h4 id="cluster-detail-title">集群概览</h4>
+                        <p>先看集群健康，再决定进入哪个命名空间继续排查。</p>
+                      </div>
+                      <div class="action-row">
+                        <button id="cluster-detail-back" class="ghost-button">返回集群列表</button>
+                      </div>
+                    </div>
+                    <div id="cluster-detail-panel" class="table-shell"></div>
+                  </div>
+                </section>
+              </section>
+
+              <section id="business-page-namespaces" class="business-page hidden">
+                <section class="business-detail-shell">
+                  <div class="business-detail-copy">
+                    <p class="eyebrow">Cluster Detail</p>
+                    <h4 id="namespace-page-title">请选择一个集群</h4>
+                    <p id="namespace-page-copy">从集群列表进入后，这里会展示当前集群的接入状态、同步状态和命名空间概览。</p>
+                  </div>
+                  <div id="namespace-page-summary" class="business-detail-grid"></div>
+                </section>
+                <section class="panel management-shell">
+                  <aside class="management-rail">
+                    <div class="management-rail-head">
+                      <p class="eyebrow">Filters</p>
+                      <h4>命名空间视图</h4>
+                      <p>先锁定集群，再浏览命名空间和治理状态。</p>
+                    </div>
+                    <div class="management-rail-fields">
+                      <label>
+                        <span>集群</span>
+                        <select id="namespace-cluster-filter" class="toolbar-input"></select>
+                      </label>
+                      <label>
+                        <span>搜索</span>
+                        <input id="search-namespaces" class="toolbar-input" placeholder="名称、显示名、来源" />
+                      </label>
+                    </div>
+                    <div class="management-rail-actions">
+                      <button id="open-create-namespace" class="primary-button">新增命名空间</button>
+                      <button id="refresh-namespaces" class="ghost-button">刷新</button>
+                    </div>
+                  </aside>
+                  <div class="management-main">
+                    <div class="section-intro section-intro-compact">
+                      <div>
+                        <p class="eyebrow">Namespace Scope</p>
+                        <h3>先锁集群范围，再看命名空间治理状态</h3>
+                      </div>
+                    </div>
+                    <div class="panel-header panel-header-compact">
+                      <div>
+                        <h4>命名空间</h4>
+                        <p>按集群查看命名空间和治理状态。</p>
+                      </div>
+                    </div>
+                    <div id="namespaces-table" class="table-shell compact-table-shell"></div>
+                  </div>
+                </section>
+              </section>
+
+              <section id="business-page-workloads" class="business-page hidden">
+                <section class="business-detail-shell">
+                  <div class="business-detail-copy">
+                    <p class="eyebrow">Namespace Detail</p>
+                    <h4 id="workload-page-title">请选择一个命名空间</h4>
+                    <p id="workload-page-copy">从命名空间页进入后，这里会显示当前命名空间的工作负载结构与健康状态。</p>
+                  </div>
+                  <div id="workload-page-summary" class="business-detail-grid"></div>
+                </section>
+                <section class="panel management-shell">
+                  <aside class="management-rail">
+                    <div class="management-rail-head">
+                      <p class="eyebrow">Filters</p>
+                      <h4>工作负载视图</h4>
+                      <p>左侧锁定范围，右侧查看列表和详情。</p>
+                    </div>
+                    <div class="management-rail-fields">
+                      <label>
+                        <span>集群</span>
+                        <select id="workload-cluster-filter" class="toolbar-input"></select>
+                      </label>
+                      <label>
+                        <span>命名空间</span>
+                        <select id="workload-namespace-filter" class="toolbar-input"></select>
+                      </label>
+                      <label>
+                        <span>类型</span>
+                        <select id="workload-kind-filter" class="toolbar-input">
+                          <option value="">全部类型</option>
+                          <option value="Deployment">Deployment</option>
+                          <option value="StatefulSet">StatefulSet</option>
+                          <option value="DaemonSet">DaemonSet</option>
+                          <option value="Job">Job</option>
+                          <option value="CronJob">CronJob</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>搜索</span>
+                        <input id="search-workloads" class="toolbar-input" placeholder="名称、命名空间、镜像" />
+                      </label>
+                    </div>
+                    <div class="management-rail-actions stacked">
+                      <button id="open-create-workload" class="primary-button">创建工作负载</button>
+                      <button id="sync-workloads" class="primary-button subtle">同步工作负载</button>
+                      <button id="refresh-workloads" class="ghost-button">刷新</button>
+                    </div>
+                  </aside>
+                  <div class="management-main">
+                    <div class="section-intro section-intro-compact">
+                      <div>
+                        <p class="eyebrow">Workload Scope</p>
+                        <h3>把范围、类型和搜索先收紧，再进入控制器详情</h3>
+                      </div>
+                    </div>
+                    <div class="panel-header panel-header-compact">
+                      <div>
+                        <h4>工作负载</h4>
+                        <p>控制器视图，点服务后进入独立详情页。</p>
+                      </div>
+                    </div>
+                    <div id="workload-list-page" class="workload-page-block">
+                      <div id="workloads-table" class="table-shell compact-table-shell"></div>
+                      <div id="workload-pagination" class="pagination-row"></div>
+                    </div>
+                  </div>
+                </section>
+              </section>
+
+              <section id="business-page-workload-detail" class="business-page hidden">
+                <section class="business-detail-shell">
+                  <div class="business-detail-copy">
+                    <p class="eyebrow">Service Detail</p>
+                    <h4 id="workload-detail-page-title">服务详情</h4>
+                    <p id="workload-detail-page-copy">这里集中查看服务状态、Pod、日志、终端、发布和资源关系。</p>
+                  </div>
+                  <div id="workload-detail-page-summary" class="business-detail-grid"></div>
+                </section>
+                <section class="panel detail-page-shell">
+                  <div id="workload-detail-page" class="workload-page-block">
+                    <div class="section-intro section-intro-compact">
+                      <div>
+                        <p class="eyebrow">Workload Detail</p>
+                        <h3>把状态、Pod 和运维动作收在同一个对象上下文里</h3>
+                      </div>
+                    </div>
+                    <div class="panel-header panel-header-nested">
+                      <div>
+                        <h4 id="workload-detail-title">工作负载详情</h4>
+                        <p>状态、Pod、资源和运维动作都收在这里。</p>
+                      </div>
+                      <div class="action-row">
+                        <button id="workload-detail-back" class="ghost-button">返回工作负载</button>
+                      </div>
+                    </div>
+                    <div id="workload-detail-panel" class="table-shell detail-shell"></div>
+                  </div>
+                </section>
+              </section>
+
+              <section id="business-page-resources" class="business-page hidden">
+                <section class="business-detail-shell">
+                  <div class="business-detail-copy">
+                    <p class="eyebrow">Resource Explorer</p>
+                    <h4 id="resource-page-title">请选择一个命名空间</h4>
+                    <p id="resource-page-copy">从资源视角查看 Service、Ingress、ConfigMap 和 Secret，便于排障时直接追网络和配置对象。</p>
+                  </div>
+                  <div id="resource-page-summary" class="business-detail-grid"></div>
+                </section>
+                <section class="panel">
+                  <div class="section-intro">
+                    <div>
+                      <p class="eyebrow">Resource Scope</p>
+                      <h3>从资源对象反查网络、配置和治理关系</h3>
+                    </div>
+                  </div>
+                  <div class="panel-header">
+                    <div>
+                      <h4>资源浏览</h4>
+                      <p>按集群和命名空间查看资源对象。</p>
+                    </div>
+                    <div class="action-row">
+                      <select id="resource-cluster-filter" class="toolbar-input"></select>
+                      <select id="resource-namespace-filter" class="toolbar-input"></select>
+                      <select id="resource-kind-filter" class="toolbar-input">
+                        <option value="ServiceAccount">ServiceAccount</option>
+                        <option value="PersistentVolumeClaim">PersistentVolumeClaim</option>
+                        <option value="Service">Service</option>
+                        <option value="Ingress">Ingress</option>
+                        <option value="ConfigMap">ConfigMap</option>
+                        <option value="Secret">Secret</option>
+                        <option value="ResourceQuota">ResourceQuota</option>
+                        <option value="LimitRange">LimitRange</option>
+                      </select>
+                      <div class="toggle-group">
+                        <button id="resource-scope-all" class="ghost-button active" type="button">全部资源</button>
+                        <button id="resource-scope-business" class="ghost-button" type="button">业务资源</button>
+                        <button id="resource-scope-system" class="ghost-button" type="button">系统资源</button>
+                      </div>
+                      <input id="search-resources" class="toolbar-input" placeholder="搜索资源名称、类型、状态" />
+                      <button id="open-create-resource" class="primary-button">创建资源</button>
+                      <button id="refresh-resources" class="ghost-button">刷新</button>
+                    </div>
+                  </div>
+                  <div class="workspace-split">
+                    <div id="resource-list-page" class="workload-page-block workspace-primary">
+                      <div id="resources-table" class="table-shell compact-table-shell"></div>
+                      <div id="resource-pagination" class="pagination-row"></div>
+                    </div>
+                    <div id="resource-detail-page" class="workload-page-block workspace-secondary hidden">
+                      <div class="panel-header panel-header-nested">
+                        <div>
+                          <h4 id="resource-detail-title">资源详情</h4>
+                          <p>摘要、引用关系和 YAML 都收在右侧。</p>
+                        </div>
+                        <div class="action-row">
+                          <button id="resource-detail-back" class="ghost-button">返回列表</button>
+                        </div>
+                      </div>
+                      <div id="resource-detail-panel" class="table-shell detail-shell"></div>
+                    </div>
+                  </div>
+                </section>
+              </section>
+            </div>
+          </section>
+        </section>
+
+        <section id="top-module-system" class="top-module hidden">
+          <section id="system-page-header" class="page-header page-header-system">
+            <div class="page-header-copy">
+              <p class="eyebrow">System Governance</p>
+              <h2>把用户、角色、身份源和平台设置收在独立治理域</h2>
+              <p>系统治理保留全部平台级配置能力，但它是低频域，不再占据主操作路径的前排位置。</p>
+            </div>
+            <div class="page-header-side">
+              <article class="signal-card">
+                <span class="muted-label">Governance Layer</span>
+                <strong>治理能力与操作能力分层</strong>
+                <p>权限、身份与系统设置集中处理，避免把交付、集群和机器操作淹没在后台配置页中。</p>
+              </article>
+            </div>
+          </section>
+          <section id="system-governance-strip" class="business-stage-strip">
+            <article class="stage-note-card">
+              <span class="muted-label">Governance 01</span>
+              <strong>用户与身份</strong>
+              <p>先确认用户、用户组和身份源，保证后续授权绑定的主体是稳定可追踪的。</p>
+            </article>
+            <article class="stage-note-card">
+              <span class="muted-label">Governance 02</span>
+              <strong>角色与访问控制</strong>
+              <p>角色、绑定和访问控制视图负责解释“谁可以做什么”，而不是和业务操作页混在一起。</p>
+            </article>
+            <article class="stage-note-card">
+              <span class="muted-label">Governance 03</span>
+              <strong>系统设置与审计</strong>
+              <p>平台设置、审计线索和治理变更统一收口，形成和操作域分开的低频后台层。</p>
+            </article>
+          </section>
+          <div class="system-layout">
+            <aside class="sidebar">
+              <div class="sidebar-header">
+                <div>
+                  <p class="eyebrow">Governance</p>
+                  <h2>系统治理</h2>
+                </div>
+              </div>
+
+              <nav class="nav">
+                <button class="nav-item active" data-module="user-management">用户管理</button>
+                <button class="nav-item" data-module="access-control">访问控制（建设中）</button>
+                <button class="nav-item" data-module="audit-center">审计中心（建设中）</button>
+                <button class="nav-item" data-module="system-settings">系统设置</button>
+              </nav>
+
+              <div class="sidebar-footer">
+                <div>
+                  <p class="muted-label">分层</p>
+                  <strong>治理域作为平台的低频入口独立存在</strong>
+                </div>
+              </div>
+            </aside>
+
+            <div class="main-content">
+              <section id="module-user-management" class="module-page">
+                <div class="section-intro">
+                  <div>
+                    <p class="eyebrow">Identity Center</p>
+                    <h3>先建立用户与身份主体，再进入角色授权</h3>
+                  </div>
+                </div>
+                <div class="section-header">
+                  <div>
+                    <h3>统一用户中心</h3>
+                    <p>管理本地用户、用户组、LDAP / SSO 身份源，以及角色授权。</p>
+                  </div>
+                </div>
+
+                <div class="tabs">
+                  <button class="tab-button active" data-tab="users">用户列表</button>
+                  <button class="tab-button" data-tab="groups">用户组</button>
+                  <button class="tab-button" data-tab="identity-sources">身份源</button>
+                  <button class="tab-button" data-tab="roles">角色授权</button>
+                </div>
+
+                <div id="tab-users" class="tab-panel active">
+                  <section class="panel">
+                    <div class="panel-header">
+                      <div>
+                        <h4>用户列表</h4>
+                        <p>用户名在系统内唯一，授权和登录都以该唯一用户名为入口。</p>
+                      </div>
+                      <div class="action-row">
+                        <input id="search-users" class="toolbar-input" placeholder="搜索用户名、显示名、邮箱" />
+                        <button id="open-create-user" class="primary-button">添加用户</button>
+                        <button id="refresh-users" class="ghost-button">刷新</button>
+                      </div>
+                    </div>
+                    <div id="users-table" class="table-shell"></div>
+                  </section>
+                </div>
+
+                <div id="tab-groups" class="tab-panel">
+                  <section class="panel">
+                    <div class="panel-header">
+                      <div>
+                        <h4>用户组</h4>
+                        <p>通过用户组汇聚用户，再把角色授权给组，后续权限维护会更轻。</p>
+                      </div>
+                      <div class="action-row">
+                        <input id="search-groups" class="toolbar-input" placeholder="搜索组名称、编码、说明" />
+                        <button id="open-create-group" class="primary-button">创建用户组</button>
+                        <button id="refresh-groups" class="ghost-button">刷新</button>
+                      </div>
+                    </div>
+                    <div id="groups-table" class="table-shell"></div>
+                  </section>
+                </div>
+
+                <div id="tab-identity-sources" class="tab-panel">
+                  <div class="content-grid two-column">
+                    <section class="panel">
+                      <div class="panel-header">
+                        <h4>新增身份源</h4>
+                        <p>支持 LDAP / OIDC(SSO) 配置，LDAP 可直接做连通性测试。</p>
+                      </div>
+                      <form id="create-source-form" class="form-grid">
+                        <label><span>名称</span><input name="name" required /></label>
+                        <label>
+                          <span>类型</span>
+                          <select name="type">
+                            <option value="ldap">LDAP</option>
+                            <option value="oidc">OIDC / SSO</option>
+                          </select>
+                        </label>
+                        <label><span>Host</span><input name="host" placeholder="ldap.example.com" /></label>
+                        <label><span>Port</span><input name="port" type="number" value="389" /></label>
+                        <label><span>Base DN</span><input name="base_dn" placeholder="dc=example,dc=com" /></label>
+                        <label><span>Bind DN</span><input name="bind_dn" /></label>
+                        <label><span>Bind Password</span><input name="bind_password" type="password" /></label>
+                        <label><span>User Filter</span><input name="user_filter" placeholder="(uid=%s)" /></label>
+                        <label><span>Issuer URL</span><input name="issuer_url" placeholder="https://sso.example.com" /></label>
+                        <label><span>Client ID</span><input name="client_id" /></label>
+                        <label><span>Client Secret</span><input name="client_secret" type="password" /></label>
+                        <label><span>Redirect URL</span><input name="redirect_url" placeholder="http://localhost:8080/callback" /></label>
+                        <button type="submit" class="primary-button">保存身份源</button>
+                      </form>
+                    </section>
+
+                    <section class="panel">
+                      <div class="panel-header">
+                        <h4>身份源列表</h4>
+                        <div class="action-row">
+                          <input id="search-sources" class="toolbar-input" placeholder="搜索名称、类型、连接地址" />
+                          <button id="refresh-sources" class="ghost-button">刷新</button>
+                        </div>
+                      </div>
+                      <div id="sources-table" class="table-shell"></div>
+                    </section>
+                  </div>
+                </div>
+
+                <div id="tab-roles" class="tab-panel">
+                  <div class="content-grid split-column">
+                    <section class="panel">
+                      <div class="panel-header">
+                        <div>
+                          <h4>角色管理</h4>
+                          <p>角色创建也收进抽屉，减少默认页面占用。</p>
+                        </div>
+                        <div class="action-row">
+                          <input id="search-roles" class="toolbar-input" placeholder="搜索角色名称、编码、说明" />
+                          <button id="open-create-role" class="primary-button">创建角色</button>
+                        </div>
+                      </div>
+                      <div id="roles-table" class="table-shell"></div>
+                    </section>
+
+                    <section class="panel">
+                      <div class="panel-header">
+                        <h4>授权分配</h4>
+                        <p>支持按唯一用户名或用户组搜索授权。</p>
+                      </div>
+                      <form id="assign-role-form" class="form-grid compact">
+                        <label>
+                          <span>授权对象</span>
+                          <select id="assign-subject-type" name="subject_type">
+                            <option value="user">用户</option>
+                            <option value="group">用户组</option>
+                          </select>
+                        </label>
+                        <label>
+                          <span>名称</span>
+                          <input id="assign-subject-name" name="subject_name" list="subject-options" placeholder="搜索或选择" required />
+                          <datalist id="subject-options"></datalist>
+                        </label>
+                        <label>
+                          <span>角色</span>
+                          <select id="assign-role-id" name="role_id" required></select>
+                        </label>
+                        <button type="submit" class="primary-button">分配角色</button>
+                      </form>
+                      <div class="table-shell">
+                        <div class="panel-header panel-header-nested">
+                          <h4>当前绑定</h4>
+                          <div class="action-row">
+                            <input id="search-bindings" class="toolbar-input" placeholder="搜索对象、角色、类型" />
+                            <button id="refresh-bindings" class="ghost-button">刷新</button>
+                          </div>
+                        </div>
+                        <div id="bindings-table"></div>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+              </section>
+
+              <section id="module-system-settings" class="module-page hidden">
+                <div class="section-intro">
+                  <div>
+                    <p class="eyebrow">Platform Settings</p>
+                    <h3>系统设置独立于主操作域，作为平台级治理配置存在</h3>
+                  </div>
+                </div>
+                <div class="section-header">
+                  <div>
+                    <h3>系统设置</h3>
+                    <p>维护平台级配置项，当前采用简单键值对方式，后续可接配置分组和加密存储。</p>
+                  </div>
+                </div>
+                <div class="content-grid two-column">
+                  <section class="panel">
+                    <div class="panel-header"><h4>新增 / 更新配置</h4></div>
+                    <form id="create-setting-form" class="form-grid">
+                      <label><span>Key</span><input name="key" required /></label>
+                      <label><span>Value</span><input name="value" /></label>
+                      <label><span>说明</span><input name="description" /></label>
+                      <button type="submit" class="primary-button">保存设置</button>
+                    </form>
+                  </section>
+
+                  <section class="panel">
+                    <div class="panel-header">
+                      <h4>设置列表</h4>
+                      <div class="action-row">
+                        <input id="search-settings" class="toolbar-input" placeholder="搜索 Key、Value、说明" />
+                        <button id="refresh-settings" class="ghost-button">刷新</button>
+                      </div>
+                    </div>
+                    <div id="settings-table" class="table-shell"></div>
+                  </section>
+                </div>
+              </section>
+
+              <section id="module-access-control" class="module-page hidden">
+                <div class="section-intro">
+                  <div>
+                    <p class="eyebrow">Access Control</p>
+                    <h3>把角色目录、绑定关系和权限覆盖面放在一个治理视角里看</h3>
+                  </div>
+                </div>
+                <div class="section-header">
+                  <div>
+                    <h3>访问控制 <span class="status-pill">建设中</span></h3>
+                    <p>聚焦平台级 RBAC：看角色、绑定关系和授权覆盖面，不把资源级策略和占位能力混在一起。</p>
+                  </div>
+                  <div class="action-row">
+                    <button id="refresh-access-control" class="ghost-button">刷新授权视图</button>
+                  </div>
+                </div>
+                <div id="access-control-summary" class="summary-grid"></div>
+                <div class="content-grid split-column">
+                  <section class="panel">
+                    <div class="panel-header">
+                      <div>
+                        <h4>角色目录</h4>
+                        <p>查看每个角色当前被多少用户或用户组承接。</p>
+                      </div>
+                      <div class="action-row">
+                        <input id="search-access-roles" class="toolbar-input" placeholder="搜索角色名称、编码、说明" />
+                        <button class="ghost-button" type="button" data-system-module-jump="user-management" data-system-tab-jump="roles">去角色授权页</button>
+                      </div>
+                    </div>
+                    <div id="access-roles-table" class="table-shell"></div>
+                  </section>
+                  <section class="panel">
+                    <div class="panel-header">
+                      <div>
+                        <h4>角色权限面板</h4>
+                        <p>选中角色后，直接看它实际绑定了哪些资源动作，不必再跳回角色页翻找。</p>
+                      </div>
+                    </div>
+                    <div id="access-role-detail" class="table-shell"></div>
+                  </section>
+                  <section class="panel">
+                    <div class="panel-header">
+                      <div>
+                        <h4>授权绑定</h4>
+                        <p>直接查看“谁绑定了什么角色”，方便核对平台当前授权面。</p>
+                      </div>
+                      <div class="action-row">
+                        <input id="search-access-bindings" class="toolbar-input" placeholder="搜索对象、角色、类型" />
+                        <select id="access-binding-type-filter" class="toolbar-input">
+                          <option value="">全部对象</option>
+                          <option value="user">仅用户</option>
+                          <option value="group">仅用户组</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div id="access-bindings-table" class="table-shell"></div>
+                  </section>
+                </div>
+              </section>
+
+              <section id="module-audit-center" class="module-page hidden">
+                <div class="section-intro">
+                  <div>
+                    <p class="eyebrow">Audit Center</p>
+                    <h3>先看最近发生了什么，再决定钻到机器、治理还是系统设置层</h3>
+                  </div>
+                </div>
+                <div class="section-header">
+                  <div>
+                    <h3>审计中心 <span class="status-pill">建设中</span></h3>
+                    <p>先把已有可追踪数据收成正式页：最近机器会话、治理变更和平台风险信号，避免继续停留在占位状态。</p>
+                  </div>
+                  <div class="action-row">
+                    <button id="refresh-audit-center" class="ghost-button">刷新审计视图</button>
+                  </div>
+                </div>
+                <div id="audit-summary" class="summary-grid"></div>
+                <div class="content-grid split-column">
+                  <section class="panel">
+                    <div class="panel-header">
+                      <div>
+                        <h4>最近会话</h4>
+                        <p>优先展示机器连接与终端链路的最近活动。</p>
+                      </div>
+                      <div class="action-row">
+                        <input id="search-audit-sessions" class="toolbar-input" placeholder="搜索资产、账号、协议、状态" />
+                        <button class="ghost-button" type="button" data-top-module="machine">进入机器工作台</button>
+                      </div>
+                    </div>
+                    <div id="audit-sessions-table" class="table-shell"></div>
+                  </section>
+                  <section class="panel">
+                    <div class="panel-header">
+                      <div>
+                        <h4>最近治理变更</h4>
+                        <p>把用户、用户组、角色、绑定、系统设置等变更信号集中展示。</p>
+                      </div>
+                      <div class="action-row">
+                        <input id="search-audit-changes" class="toolbar-input" placeholder="搜索类型、对象、说明" />
+                        <select id="audit-change-kind-filter" class="toolbar-input">
+                          <option value="">全部类型</option>
+                          <option value="机器事件">机器事件</option>
+                          <option value="用户">用户</option>
+                          <option value="用户组">用户组</option>
+                          <option value="角色">角色</option>
+                          <option value="角色绑定">角色绑定</option>
+                          <option value="系统设置">系统设置</option>
+                          <option value="身份源">身份源</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div id="audit-changes-table" class="table-shell"></div>
+                  </section>
+                </div>
+                <section class="panel">
+                  <div class="panel-header">
+                    <div>
+                      <h4>机器事件流</h4>
+                      <p>把终端与文件传输链路里的关键事件单独拉出来，便于和治理变更分开看。</p>
+                    </div>
+                    <div class="action-row">
+                      <select id="audit-event-type-filter" class="toolbar-input">
+                        <option value="">全部事件</option>
+                        <option value="terminal">terminal</option>
+                        <option value="sftp">sftp</option>
+                        <option value="session">session</option>
+                        <option value="credential">credential</option>
+                      </select>
+                      <select id="audit-event-level-filter" class="toolbar-input">
+                        <option value="">全部级别</option>
+                        <option value="info">info</option>
+                        <option value="warn">warn</option>
+                        <option value="error">error</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div id="audit-events-table" class="table-shell"></div>
+                </section>
+                <section class="panel">
+                  <div class="panel-header">
+                    <div>
+                      <h4>统一时间轴</h4>
+                      <p>把治理变更、机器事件和最近会话按时间收成一条线，先看最新发生了什么，再决定钻到哪一层。</p>
+                    </div>
+                  </div>
+                  <div id="audit-timeline-table" class="table-shell"></div>
+                </section>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section id="top-module-machine" class="top-module hidden">
+          <section id="machine-page-header" class="page-header page-header-machine">
+            <div class="page-header-copy">
+              <p class="eyebrow">Machine Workbench</p>
+              <h2>把资产、凭据、会话和终端聚合成同一个连接工作区</h2>
+              <p>机器工作台不是单纯的资产表，而是让连接发起、凭据管理、终端操作和会话追踪自然衔接的日常入口。</p>
+              <div class="page-header-actions">
+                <button id="machine-create-asset" class="primary-button">新增资产</button>
+                <button id="machine-create-credential" class="ghost-button">新增凭据</button>
+                <button id="machine-create-group" class="ghost-button">新增资产组</button>
+                <button id="machine-quick-connect" class="primary-button">快速登录</button>
+                <button id="machine-refresh" class="ghost-button">刷新资产视图</button>
+              </div>
+            </div>
+            <div class="page-header-side">
+              <div id="machine-summary-cards" class="summary-grid machine-summary-grid"></div>
+            </div>
+          </section>
+
+          <section id="machine-operations-grid" class="machine-operations-grid">
+            <div class="machine-operations-main">
+              <nav class="machine-workspace-nav">
+                <button id="machine-nav-list" class="business-nav-item active">资产列表</button>
+                <button id="machine-nav-access" class="business-nav-item">访问与终端</button>
+              </nav>
+
+              <section id="machine-quick-strip" class="machine-quick-strip">
+                <article class="stage-note-card">
+                  <span class="muted-label">Asset Mode</span>
+                  <strong>先锁定机器资产</strong>
+                  <p>列表页用于确认机器分组、状态、登录入口和最近活跃，优先建立对象上下文。</p>
+                </article>
+                <article class="stage-note-card">
+                  <span class="muted-label">Access Mode</span>
+                  <strong>再进入持续终端操作</strong>
+                  <p>访问与终端页只负责连接发起和持续操作，不再和资产维护视图混在一起。</p>
+                </article>
+                <article class="stage-note-card">
+                  <span class="muted-label">Audit Mode</span>
+                  <strong>旁路保留会话与凭据上下文</strong>
+                  <p>凭据和最近会话放在右侧活动栏，帮助用户随时回到最近连接和审计线索。</p>
+                </article>
+              </section>
+
+              <section id="machine-list-page" class="panel machine-shell">
+                <div class="machine-main">
+                  <aside class="panel machine-nav-panel">
+                    <div class="panel-header panel-header-compact">
+                      <div>
+                        <h4>资产组</h4>
+                        <p>按分组浏览机器资产。</p>
+                      </div>
+                    </div>
+                    <div id="machine-group-panel" class="machine-group-tree"></div>
+                  </aside>
+
+                  <section class="panel machine-assets-panel">
+                    <div class="section-intro">
+                      <div>
+                        <p class="eyebrow">Asset Inventory</p>
+                        <h3>先确认资产状态和入口，再发起连接</h3>
+                      </div>
+                      <div class="scope-badge-row">
+                        <span class="scope-badge">状态</span>
+                        <span class="scope-badge">账号</span>
+                        <span class="scope-badge">最近活跃</span>
+                      </div>
+                    </div>
+                    <div class="panel-header panel-header-compact machine-assets-head">
+                      <div>
+                        <h4>资产列表</h4>
+                        <p>围绕主机对象查看登录入口、状态和最近活跃。</p>
+                      </div>
+                      <div class="action-row">
+                        <button id="machine-create-asset-inline" class="primary-button">新增资产</button>
+                        <button id="machine-refresh-inline" class="ghost-button">刷新</button>
+                      </div>
+                    </div>
+                    <div class="machine-inline-filter machine-inline-filter-jumpserver">
+                      <div class="machine-inline-filter-fields machine-inline-filter-fields-wide">
+                        <label class="machine-inline-search">
+                          <span>搜索资产</span>
+                          <input id="machine-search-assets" class="toolbar-input" placeholder="搜索名称、IP、标签、账号" />
+                        </label>
+                        <label>
+                          <span>状态</span>
+                          <select id="machine-status-filter" class="toolbar-input">
+                            <option value="">全部状态</option>
+                            <option value="online">在线</option>
+                            <option value="offline">离线</option>
+                            <option value="warning">需关注</option>
+                          </select>
+                        </label>
+                      </div>
+                    </div>
+                    <div id="machine-assets-table" class="table-shell compact-table-shell"></div>
+                    <div class="machine-assets-footer">
+                      <div class="machine-page-size-panel">
+                        <span>每页显示</span>
+                        <select id="machine-page-size" class="toolbar-input">
+                          <option value="10" selected>10</option>
+                          <option value="20">20</option>
+                          <option value="30">30</option>
+                          <option value="50">50</option>
+                          <option value="100">100</option>
+                        </select>
+                      </div>
+                      <div id="machine-assets-pagination" class="pagination-row machine-pagination-row"></div>
+                    </div>
+                  </section>
+                </div>
+              </section>
+
+              <section id="machine-access-page" class="machine-shell machine-access-workbench hidden">
+                <div id="machine-access-shell" class="machine-access-shell">
+                  <aside class="machine-access-sidebar">
+                    <div class="machine-access-sidebar-head">
+                      <div>
+                        <p class="eyebrow">Assets</p>
+                        <h4>机器资源</h4>
+                      </div>
+                      <button id="machine-access-refresh" class="ghost-button">刷新</button>
+                    </div>
+                    <div class="machine-inline-filter machine-inline-filter-jumpserver">
+                      <div class="machine-inline-filter-fields machine-inline-filter-fields-wide">
+                        <label class="machine-inline-search">
+                          <span>搜索</span>
+                          <input id="machine-access-search-assets" class="toolbar-input" placeholder="搜索名称、IP、账号" />
+                        </label>
+                        <label>
+                          <span>状态</span>
+                          <select id="machine-access-status-filter" class="toolbar-input">
+                            <option value="">全部状态</option>
+                            <option value="online">在线</option>
+                            <option value="offline">离线</option>
+                            <option value="warning">需关注</option>
+                          </select>
+                        </label>
+                      </div>
+                    </div>
+                    <div id="machine-access-group-panel" class="machine-group-tree"></div>
+                    <div id="machine-access-assets-table" class="table-shell compact-table-shell"></div>
+                    <div id="machine-access-assets-pagination" class="pagination-row machine-pagination-row"></div>
+                  </aside>
+                  <div id="machine-access-splitter" class="machine-splitter" role="separator" aria-orientation="vertical" aria-label="调整机器资产区域宽度" tabindex="0"></div>
+                  <section class="panel machine-access-terminal-panel">
+                    <div class="section-intro section-intro-compact">
+                      <div>
+                        <p class="eyebrow">Access Session</p>
+                        <h3>左侧锁对象，右侧持续终端操作</h3>
+                      </div>
+                    </div>
+                    <div class="panel-header panel-header-compact">
+                      <div>
+                        <h4>访问与终端工作台</h4>
+                        <p>左边锁定机器和发起连接，右边直接持续操作，不再拆成“登录工作台”和“终端页”两个来回切换的页面。</p>
+                      </div>
+                      <button class="ghost-button" id="machine-access-open-terminal-page">聚焦终端</button>
+                    </div>
+                    <div id="machine-terminal-dock"></div>
+                  </section>
+                </div>
+              </section>
+            </div>
+
+            <aside id="machine-activity-rail" class="machine-activity-rail">
+              <section class="panel machine-sidecar-panel machine-sidecar-panel-secondary">
+                <div class="panel-header panel-header-compact">
+                  <div>
+                    <p class="eyebrow">Credentials</p>
+                    <h4>凭据库</h4>
+                    <p>提前保存密码或 SSH 私钥，创建资产时可直接选择。</p>
+                  </div>
+                </div>
+                <div id="machine-credential-feed" class="machine-feed"></div>
+                <div id="machine-credential-pagination" class="pagination-row machine-side-pagination"></div>
+              </section>
+
+              <section class="panel machine-sidecar-panel machine-sidecar-panel-secondary">
+                <div class="panel-header panel-header-compact">
+                  <div>
+                    <p class="eyebrow">Sessions</p>
+                    <h4>最近会话</h4>
+                    <p>优先看最近登录动作和连接轨迹。</p>
+                  </div>
+                </div>
+                <div id="machine-session-feed" class="machine-feed"></div>
+                <div id="machine-session-pagination" class="pagination-row machine-side-pagination"></div>
+              </section>
+
+              <section class="panel machine-sidecar-panel machine-sidecar-panel-tertiary">
+                <div class="panel-header panel-header-compact">
+                  <div>
+                    <p class="eyebrow">Operating Model</p>
+                    <h4>连接策略</h4>
+                    <p>说明当前机器工作台的组织方式。</p>
+                  </div>
+                </div>
+                <div class="machine-guidance">
+                  <article class="machine-guidance-card">
+                    <span class="muted-label">资产视角</span>
+                    <strong>先锁定主机，再选择账号和登录方式</strong>
+                    <p>参考 JumpServer 的资产中心思路，机器工作台优先围绕主机对象组织，而不是围绕临时会话组织。</p>
+                  </article>
+                  <article class="machine-guidance-card">
+                    <span class="muted-label">审计视角</span>
+                    <strong>所有连接都预留审计入口</strong>
+                    <p>后续会补登录录像、命令审计、连接审批和会话回放。</p>
+                  </article>
+                </div>
+              </section>
+            </aside>
+          </section>
+
+          <section id="machine-detail-page" class="panel machine-detail-page hidden">
+            <div class="detail-page-head">
+              <button id="machine-detail-back" class="ghost-button">返回资产列表</button>
+              <div>
+                <p class="eyebrow">Asset Detail</p>
+                <h3 id="machine-detail-title">资产详情</h3>
+              </div>
+            </div>
+            <div id="machine-detail-panel" class="detail-stack"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div id="user-drawer" class="drawer hidden">
+      <div class="drawer-backdrop" data-close-drawer="user"></div>
+      <aside class="drawer-panel">
+        <div class="panel-header">
+          <div><p class="eyebrow">Create User</p><h3>添加本地用户</h3></div>
+          <button data-close-drawer="user" class="ghost-button">关闭</button>
+        </div>
+        <p class="drawer-copy">用于创建系统内置账号。用户名必须唯一，建议保留少量本地管理员作为外部身份源故障时的保底入口。</p>
+        <form id="create-user-form" class="form-grid">
+          <label><span>用户名</span><input name="username" required /></label>
+          <label><span>显示名</span><input name="display_name" required /></label>
+          <label><span>邮箱</span><input name="email" type="email" /></label>
+          <label><span>密码</span><input name="password" type="password" minlength="8" required /></label>
+          <label>
+            <span>强制开启 MFA</span>
+            <select name="mfa_required">
+              <option value="false" selected>否</option>
+              <option value="true">是</option>
+            </select>
+          </label>
+          <button type="submit" class="primary-button">创建用户</button>
+        </form>
+      </aside>
+    </div>
+
+    <div id="role-drawer" class="drawer hidden">
+      <div class="drawer-backdrop" data-close-drawer="role"></div>
+      <aside class="drawer-panel">
+        <div class="panel-header">
+          <div><p class="eyebrow">Create Role</p><h3>创建角色</h3></div>
+          <button data-close-drawer="role" class="ghost-button">关闭</button>
+        </div>
+        <p class="drawer-copy">把权限点收敛在角色里，再授给用户或用户组，后续维护成本更低。</p>
+        <form id="create-role-form" class="form-grid">
+          <label><span>角色名称</span><input name="name" required /></label>
+          <label><span>角色编码</span><input name="code" required /></label>
+          <label><span>说明</span><input name="description" /></label>
+          <button type="submit" class="primary-button">创建角色</button>
+        </form>
+      </aside>
+    </div>
+
+    <div id="group-drawer" class="drawer hidden">
+      <div class="drawer-backdrop" data-close-drawer="group"></div>
+      <aside class="drawer-panel">
+        <div class="panel-header">
+          <div><p class="eyebrow">Create Group</p><h3>创建用户组</h3></div>
+          <button data-close-drawer="group" class="ghost-button">关闭</button>
+        </div>
+        <p class="drawer-copy">用户组用于承接一批用户的共同授权，适合运维组、审计组、财务组这类场景。</p>
+        <form id="create-group-form" class="form-grid">
+          <label><span>组名称</span><input name="name" required /></label>
+          <label><span>组编码</span><input name="code" required /></label>
+          <label><span>说明</span><input name="description" /></label>
+          <button type="submit" class="primary-button">创建用户组</button>
+        </form>
+      </aside>
+    </div>
+
+    <div id="cluster-drawer" class="drawer hidden">
+      <div class="drawer-backdrop" data-close-drawer="cluster"></div>
+      <aside class="drawer-panel">
+        <div class="panel-header">
+          <div><p class="eyebrow">Create Cluster</p><h3>接入 Kubernetes 集群</h3></div>
+          <button data-close-drawer="cluster" class="ghost-button">关闭</button>
+        </div>
+        <p class="drawer-copy">支持 `token`、静态 `kubeconfig`，以及 AWS/EKS 的 `aws eks get-token` 动态 kubeconfig。凭据内容会写入数据库，接口返回时只暴露是否已配置。</p>
+        <form id="create-cluster-form" class="form-grid">
+          <label><span>集群名称</span><input name="name" required /></label>
+          <label><span>集群编码</span><input name="code" required /></label>
+          <label><span>环境</span><input name="environment" placeholder="prod / staging / dev" required /></label>
+          <label><span>供应商</span><input name="provider" placeholder="aws / aliyun / on-prem" required /></label>
+          <label><span>API 地址</span><input name="api_endpoint" placeholder="https://cluster.example.com" required /></label>
+          <label>
+            <span>认证方式</span>
+            <select name="auth_type">
+              <option value="token">ServiceAccount Token</option>
+              <option value="kubeconfig">Kubeconfig</option>
+            </select>
+          </label>
+          <label><span>凭据内容</span><textarea name="credential" rows="5" placeholder="token 或 kubeconfig 内容"></textarea></label>
+          <label><span>说明</span><input name="description" /></label>
+          <button type="submit" class="primary-button">保存集群</button>
+        </form>
+      </aside>
+    </div>
+
+    <div id="namespace-drawer" class="drawer hidden">
+      <div class="drawer-backdrop" data-close-drawer="namespace"></div>
+      <aside class="drawer-panel">
+        <div class="panel-header">
+          <div><p class="eyebrow">Create Namespace</p><h3>新增命名空间</h3></div>
+          <button data-close-drawer="namespace" class="ghost-button">关闭</button>
+        </div>
+        <p class="drawer-copy">这里维护平台侧纳管清单。后续接入集群同步时，可把手工维护和同步来源区分开。</p>
+        <form id="create-namespace-form" class="form-grid">
+          <label>
+            <span>所属集群</span>
+            <select id="create-namespace-cluster-id" name="cluster_id"></select>
+          </label>
+          <label><span>Namespace 名称</span><input name="name" required /></label>
+          <label><span>显示名</span><input name="display_name" /></label>
+          <label><span>说明</span><input name="description" /></label>
+          <button type="submit" class="primary-button">保存命名空间</button>
+        </form>
+      </aside>
+    </div>
+
+    <div id="workload-drawer" class="drawer hidden">
+      <div class="drawer-backdrop" data-close-drawer="workload"></div>
+      <aside class="drawer-panel drawer-panel-wide">
+        <div class="drawer-header">
+          <div>
+            <p class="eyebrow">Kubernetes</p>
+            <h3>创建资源</h3>
+          </div>
+          <button data-close-drawer="workload" class="ghost-button">关闭</button>
+        </div>
+        <p class="drawer-copy">参考 Kuboard 的创建流程，先选资源类型，再决定走图形化还是 YAML。工作负载走分步表单，配置 / 网络 / 治理资源提供结构化模板和 YAML 两种入口。</p>
+        <div id="workload-creator-root" class="workload-creator-shell"></div>
+      </aside>
+    </div>
+
+    <div id="form-modal" class="modal hidden">
+      <div class="modal-backdrop" id="close-form-modal-backdrop"></div>
+      <div class="modal-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow" id="form-modal-eyebrow">Edit</p>
+            <h3 id="form-modal-title">编辑</h3>
+          </div>
+          <button id="close-form-modal" class="ghost-button">关闭</button>
+        </div>
+        <p id="form-modal-copy" class="drawer-copy hidden"></p>
+        <form id="form-modal-form" class="form-grid"></form>
+      </div>
+    </div>
+
+    <div id="confirm-modal" class="modal hidden">
+      <div class="modal-backdrop" id="close-confirm-modal-backdrop"></div>
+      <div class="modal-panel modal-panel-compact">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow" id="confirm-modal-eyebrow">Confirm</p>
+            <h3 id="confirm-modal-title">确认操作</h3>
+          </div>
+          <button id="close-confirm-modal" class="ghost-button">关闭</button>
+        </div>
+        <p id="confirm-modal-copy" class="drawer-copy"></p>
+        <div class="confirm-actions">
+          <button id="confirm-cancel" class="ghost-button">取消</button>
+          <button id="confirm-submit" class="primary-button danger-button">确认</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+    <script src="/assets/vendor/xterm.js?v=20260425-machine-terminal-input-fix-2"></script>
+    <script type="module" src="/src/boot/main.js?v=20260426-auth-state-singleton-fix-1"></script>
+  </body>
+</html>

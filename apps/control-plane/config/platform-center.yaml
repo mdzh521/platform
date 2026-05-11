@@ -1,0 +1,53 @@
+# Platform Center default backend config.
+# Users can edit this file directly, or override any field with environment variables.
+
+app_name: backend-center
+port: "8080"
+run_mode: single
+
+# Change this in production.
+jwt_secret: change-me
+internal_runner_token: runner-dev-token
+
+# Default admin bootstrap account.
+default_admin_username: admin
+default_admin_password: admin123456
+
+# MySQL connection.
+mysql_host: mysql
+mysql_port: "3306"
+mysql_database: backend_center
+mysql_user: backend
+mysql_password: backend123
+
+# Optional bootstrap cloud accounts.
+# These will be encrypted before storage when the backend starts.
+cloud_accounts: []
+#  - name: aws-demo
+#    provider: aws
+#    access_key: AKIA...
+#    secret_key: your-secret-key
+#    region: ap-southeast-1
+#    role_arn: arn:aws:iam::123456789012:role/platform-center
+#    default_tags:
+#      - env=dev
+#      - owner=platform
+#    default_zones:
+#      - ap-southeast-1a
+#      - ap-southeast-1b
+
+frontend:
+  # embedded: backend serves bundled web
+  # external: frontend is served separately, backend only exposes APIs
+  mode: embedded
+  api_base_url: ""
+
+cache:
+  # memory | redis
+  driver: redis
+  redis_url: redis://redis:6379/0
+
+queue:
+  # memory | redis
+  driver: redis
+  redis_url: redis://redis:6379/1

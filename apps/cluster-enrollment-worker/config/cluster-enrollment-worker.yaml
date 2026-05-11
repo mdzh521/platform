@@ -1,0 +1,5 @@
+worker_name: cluster-enrollment-worker
+listen_addr: :8094
+poll_interval: 10s
+backend_base_url: http://127.0.0.1:18080
+backend_token: runner-dev-token
