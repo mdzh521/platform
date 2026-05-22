@@ -54,7 +54,7 @@ async function bootstrapApp() {
   const failures = [];
   const loaders = [
     ["系统治理", loadSystemData],
-    ["交付网络", loadCloudData],
+    ["基础建设", loadCloudData],
     ["集群工作台", loadK8sData],
     ["机器工作台", loadMachineData],
   ];
@@ -117,7 +117,7 @@ function bindModuleEvents() {
   moduleEventsBound = true;
   for (const [label, binder] of [
     ["系统治理", bindSystemEvents],
-    ["交付网络", bindCloudEvents],
+    ["基础建设", bindCloudEvents],
     ["集群工作台", bindK8sEvents],
     ["机器工作台", bindMachineEvents],
   ]) {
@@ -169,7 +169,7 @@ function switchTopModule(module, button) {
   button?.classList.add("active");
   document.querySelectorAll(".top-module").forEach((section) => section.classList.add("hidden"));
   document.getElementById(`top-module-${module}`).classList.remove("hidden");
-  const titles = { overview: "总览", cloud: "交付网络", business: "集群工作台", system: "系统治理 / 用户与身份", machine: "机器工作台" };
+  const titles = { overview: "总览", cloud: "基础建设 / 基础交付", business: "集群工作台", system: "系统治理 / 用户与身份", machine: "机器工作台" };
   elements.moduleTitle.textContent = titles[module];
   if (module === "overview") {
     renderOverviewDashboard();

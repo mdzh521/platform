@@ -6415,3 +6415,227 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+/* Final readability pass for the light operations-console shell. */
+.brand-mark {
+  flex: 0 0 auto;
+  background-color: var(--brand-strong);
+  background-image: linear-gradient(135deg, var(--brand), var(--accent));
+}
+
+.brand-mark.small {
+  width: 48px;
+  min-width: 48px;
+  height: 48px;
+}
+
+.eyebrow,
+.muted-label {
+  letter-spacing: 0;
+  color: #52606a;
+}
+
+.topbar {
+  background-color: rgba(255, 255, 255, 0.96);
+}
+
+.topbar h1,
+.topbar .eyebrow,
+.topbar-meta,
+.current-user-name {
+  color: #172128;
+}
+
+.topbar h1,
+.page-header h2,
+.overview-summary-card strong,
+.overview-domain-card strong,
+.summary-card strong {
+  letter-spacing: 0;
+}
+
+.topbar-context {
+  color: #475569;
+}
+
+.permission-badge,
+.current-user-name {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(15, 23, 42, 0.1);
+  color: #334155;
+}
+
+.primary-button {
+  background-color: var(--brand-strong);
+  background-image: linear-gradient(135deg, var(--brand), var(--brand-strong));
+}
+
+.summary-card {
+  color: #172128;
+}
+
+.summary-card strong {
+  color: #172128;
+}
+
+.summary-card span,
+.summary-card p {
+  color: #475569;
+}
+
+.summary-card-featured,
+.summary-card-featured strong {
+  color: #f7fafc;
+}
+
+.summary-card-featured span,
+.summary-card-featured p {
+  color: #dbe5ee;
+}
+
+.overview-summary-card.is-primary {
+  background:
+    linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(255, 255, 255, 0.98) 58%),
+    rgba(255, 255, 255, 0.96);
+}
+
+.overview-summary-card.is-primary .muted-label,
+.overview-summary-card.is-primary p {
+  color: #475569;
+}
+
+.machine-summary-grid .summary-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 252, 0.94)),
+    #ffffff;
+  border-color: rgba(15, 23, 42, 0.1);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+  color: #172128;
+}
+
+.machine-summary-grid .summary-card strong {
+  color: #172128;
+}
+
+.machine-summary-grid .summary-card span,
+.machine-summary-grid .summary-card p {
+  color: #52606a;
+}
+
+@media (max-width: 720px) {
+  .workspace {
+    width: min(100%, calc(100% - 24px));
+    padding-top: 12px;
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .topbar-left {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+    width: 100%;
+  }
+
+  .topbar h1 {
+    font-size: 25px;
+    line-height: 1.12;
+  }
+
+  .topbar .eyebrow {
+    font-size: 11px;
+  }
+
+  .topbar-meta {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    width: 100%;
+    padding-top: 0;
+  }
+
+  .permission-badge,
+  .current-user-name,
+  .topbar-meta .ghost-button {
+    width: 100%;
+    justify-content: center;
+    min-height: 40px;
+  }
+
+  .top-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+
+  .top-tab {
+    flex: 0 0 auto;
+    min-width: 112px;
+    min-height: 42px;
+    padding: 8px 12px;
+    scroll-snap-align: start;
+  }
+
+  .page-header {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .page-header h2 {
+    font-size: 28px;
+    line-height: 1.16;
+  }
+
+  .page-header-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .page-header-actions .primary-button,
+  .page-header-actions .ghost-button {
+    width: 100%;
+  }
+}
+
+.overview-summary-card.is-primary strong {
+  color: #172128;
+}
+
+.business-context {
+  color: #475569;
+}
+
+.toggle-chip {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(15, 23, 42, 0.1);
+  color: #334155;
+}
+
+.toggle-chip span {
+  color: inherit;
+}
+
+.sidebar-header h2,
+.sidebar-header .eyebrow,
+.sidebar-footer,
+.sidebar-footer strong {
+  color: #172128;
+}
+
+.machine-inline-filter-jumpserver {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+.machine-inline-filter-jumpserver span {
+  color: #52606a;
+}

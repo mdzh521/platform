@@ -15,6 +15,7 @@ let preferredBlueprintCode = "";
 
 export async function loadCloudData() {
   const snapshot = await loadCloudSnapshot();
+  state.cloud.workbench = snapshot.workbench || null;
   state.cloud.summary = snapshot.summary || {};
   state.cloud.accounts = snapshot.accounts || [];
   state.cloud.projects = snapshot.projects || [];

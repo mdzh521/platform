@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Platform Center</title>
     <link rel="stylesheet" href="/assets/vendor/xterm.css?v=20260425-machine-terminal-input-fix-2" />
-    <link rel="stylesheet" href="/assets/styles.css?v=20260425-machine-terminal-input-fix-2" />
+    <link rel="stylesheet" href="/assets/styles.css?v=20260517-foundation-workbench" />
   </head>
   <body>
     <div id="login-screen" class="login-shell">
@@ -57,7 +57,7 @@
             <div>
               <p class="eyebrow">Platform Center</p>
               <h1 id="module-title">总览</h1>
-              <p class="topbar-context">统一查看交付、集群、机器与治理状态。</p>
+              <p class="topbar-context">统一查看基础建设、集群、机器与治理状态。</p>
             </div>
           </div>
           <div class="topbar-meta">
@@ -69,7 +69,7 @@
 
         <nav class="top-tabs">
           <button class="top-tab active" data-top-module="overview">总览</button>
-          <button class="top-tab" data-top-module="cloud">交付网络</button>
+          <button class="top-tab" data-top-module="cloud">基础建设</button>
           <button class="top-tab" data-top-module="business">集群工作台</button>
           <button class="top-tab" data-top-module="machine">机器工作台</button>
           <button class="top-tab" data-top-module="system">系统治理</button>
@@ -80,10 +80,10 @@
             <div class="page-header page-header-overview">
               <div class="page-header-copy">
                 <p class="eyebrow">Overview</p>
-                <h2>把交付、集群、机器和治理收敛到同一个工作起点</h2>
+                <h2>把基础建设、集群、机器和治理收敛到同一个工作起点</h2>
                 <p>先看平台现在是否稳定，再决定进入哪条操作域继续工作。首页不再只是介绍页，而是统一的运维工作台入口。</p>
                 <div class="page-header-actions">
-                  <button class="primary-button" data-top-module="cloud">进入交付网络</button>
+                  <button class="primary-button" data-top-module="cloud">进入基础建设</button>
                   <button class="ghost-button" data-top-module="business">进入集群工作台</button>
                   <button class="ghost-button" data-top-module="machine">进入机器工作台</button>
                 </div>
@@ -106,10 +106,10 @@
 
             <div id="overview-ops-grid" class="overview-ops-grid">
               <article class="overview-domain-card">
-                <span class="muted-label">交付网络</span>
-                <strong>云账号、Foundation Network、交付对象和执行结果放进同一条路径</strong>
-                <p>先锁定交付上下文，再发起网络、主机和集群交付，不再让任务和资源结果分散在多个入口里。</p>
-                <button class="ghost-button" data-top-module="cloud">查看交付域</button>
+                <span class="muted-label">基础建设</span>
+                <strong>云账号、基础网络、交付对象和执行结果放进同一条路径</strong>
+                <p>先锁定基础交付上下文，再发起网络、主机和集群交付，不再让任务和资源结果分散在多个入口里。</p>
+                <button class="ghost-button" data-top-module="cloud">查看基础建设</button>
               </article>
               <article class="overview-domain-card">
                 <span class="muted-label">集群工作台</span>
@@ -135,8 +135,8 @@
                 </div>
                 <div class="activity-list">
                   <div class="activity-item">
-                    <strong>交付网络任务</strong>
-                    <p>优先看 Foundation Network 和 Delivery Job 的执行结果，再决定是否继续扩展资源。</p>
+                    <strong>基础交付任务</strong>
+                    <p>优先看基础网络和基础交付任务的执行结果，再决定是否继续扩展资源。</p>
                   </div>
                   <div class="activity-item">
                     <strong>集群健康核查</strong>
@@ -188,12 +188,12 @@
           <section class="cloud-stage-shell">
             <div id="delivery-page-header" class="page-header page-header-delivery">
               <div class="page-header-copy">
-                <p class="eyebrow">Delivery Network</p>
-                <h2>先收口交付上下文，再扩展网络、主机和集群</h2>
-                <p>这里负责把云账号、Foundation Network、交付对象和任务结果放到一条连续路径里。交付对象不再脱离底座单独创建。</p>
+                <p class="eyebrow">基础建设 / 基础交付</p>
+                <h2>先收口基础交付上下文，再扩展网络、主机和集群</h2>
+                <p>这里负责把云账号、基础网络、交付对象和任务结果放到一条连续路径里。交付对象不再脱离底座单独创建。</p>
                 <div class="page-header-actions">
                   <button id="cloud-create-account" class="primary-button">新增云账号</button>
-                  <button id="cloud-create-network-plan" class="ghost-button">创建 Foundation Network</button>
+                  <button id="cloud-create-network-plan" class="ghost-button">创建基础网络</button>
                   <button id="cloud-refresh" class="ghost-button">刷新阶段状态</button>
                 </div>
               </div>
@@ -205,18 +205,18 @@
             <section id="delivery-stage-strip" class="business-stage-strip">
               <article class="stage-note-card">
                 <span class="muted-label">Stage 01</span>
-                <strong>交付上下文</strong>
+                <strong>基础交付上下文</strong>
                 <p>先确认云账号、区域和环境归属，避免不同 provider 和 project 的基础设施串在一起。</p>
               </article>
               <article class="stage-note-card">
                 <span class="muted-label">Stage 02</span>
-                <strong>Foundation Network</strong>
-                <p>基础网络是交付底座，后续主机、Bastion 和集群对象都从这里向外生长。</p>
+                <strong>基础网络</strong>
+                <p>基础网络是基础交付底座，后续主机、Bastion 和集群对象都从这里向外生长。</p>
               </article>
               <article class="stage-note-card">
                 <span class="muted-label">Stage 03</span>
                 <strong>任务与结果</strong>
-                <p>先看 Delivery Job 的执行状态，再在同一视角里核对资源回填结果和后续清理动作。</p>
+                <p>先看基础交付任务的执行状态，再在同一视角里核对资源回填结果和后续清理动作。</p>
               </article>
             </section>
 
@@ -225,15 +225,15 @@
                 <section class="panel cloud-stage-panel cloud-stage-panel-foundation">
                   <div class="section-intro">
                     <div>
-                      <p class="eyebrow">Context + Foundation</p>
-                      <h3>先锁定交付上下文，再建立底层网络</h3>
+                      <p class="eyebrow">基础交付上下文</p>
+                      <h3>先锁定基础交付上下文，再建立底层网络</h3>
                     </div>
                   </div>
                   <div class="panel-header">
                     <div>
-                      <p class="eyebrow">Context + Foundation</p>
-                      <h4>先定云账号上下文，再建立 Foundation Network</h4>
-                      <p>这里负责把 provider、云账号、区域和基础网络收口。没有 Foundation Network，后面的服务器、Ops Bastion、Cluster 都不能脱离它单独创建。</p>
+                      <p class="eyebrow">基础交付上下文</p>
+                      <h4>先定云账号上下文，再建立基础网络</h4>
+                      <p>这里负责把 provider、云账号、区域和基础网络收口。没有基础网络，后面的服务器、Ops Bastion、Cluster 都不能脱离它单独创建。</p>
                     </div>
                   </div>
                   <div id="cloud-foundation-status" class="cloud-stage-status-grid"></div>
@@ -242,7 +242,7 @@
                       <div class="panel-header panel-header-compact">
                         <div>
                           <h4>云账号</h4>
-                          <p>这里是交付上下文，不回显敏感信息。Foundation Network 和后续 Delivery 都会绑定到这里的 provider、账号和区域。</p>
+                          <p>这里是基础交付上下文，不回显敏感信息。基础网络和后续基础交付任务都会绑定到这里的 provider、账号和区域。</p>
                         </div>
                       </div>
                       <div id="cloud-accounts-table" class="table-shell compact-table-shell"></div>
@@ -250,7 +250,7 @@
                     <article class="cloud-stage-subpanel">
                       <div class="panel-header panel-header-compact">
                         <div>
-                          <h4>Foundation Network</h4>
+                          <h4>基础网络</h4>
                           <p>基础网络在这里独立建和看。每条网络都绑定云账号和 provider，后面的服务器、Ops Bastion、Cluster 都从它发起。</p>
                         </div>
                         <div class="action-row">
@@ -266,15 +266,15 @@
                 <section class="panel cloud-stage-panel cloud-stage-panel-delivery">
                   <div class="section-intro">
                     <div>
-                      <p class="eyebrow">Delivery Objects</p>
-                      <h3>交付对象从 Foundation Network 发起，而不是脱离底座单独创建</h3>
+                      <p class="eyebrow">基础交付对象</p>
+                      <h3>交付对象从基础网络发起，而不是脱离底座单独创建</h3>
                     </div>
                   </div>
                   <div class="panel-header">
                     <div>
-                      <p class="eyebrow">Delivery Objects</p>
-                      <h4>机器与交付对象从 Foundation Network 发起</h4>
-                      <p>服务器自动化、Ops Bastion、Cluster 是相对独立的交付对象，但都必须消费某条 Foundation Network。推荐直接从网络卡片进入创建，不要脱离底座单独起任务。</p>
+                      <p class="eyebrow">基础交付对象</p>
+                      <h4>机器与交付对象从基础网络发起</h4>
+                      <p>服务器自动化、Ops Bastion、Cluster 是相对独立的交付对象，但都必须消费某条基础网络。推荐直接从网络卡片进入创建，不要脱离底座单独起任务。</p>
                     </div>
                   </div>
                   <div class="cloud-stage-panel-grid cloud-stage-panel-grid-wide">
@@ -282,11 +282,11 @@
                       <div class="panel-header panel-header-compact">
                         <div>
                           <h4>可执行蓝图</h4>
-                          <p>这里只是能力清单。真正创建服务器或 Bastion，优先从具体的 Foundation Network 卡片进入。</p>
+                          <p>这里只是能力清单。真正创建服务器或 Bastion，优先从具体的基础网络卡片进入。</p>
                         </div>
                         <div class="action-row">
                           <button type="button" class="ghost-button" data-cloud-shortcut="scroll-networks">从网络选择</button>
-                          <button type="button" class="ghost-button" data-cloud-shortcut="create-job">创建通用 Delivery Job</button>
+                          <button type="button" class="ghost-button" data-cloud-shortcut="create-job">创建通用基础交付任务</button>
                         </div>
                       </div>
                       <div id="cloud-blueprints-table" class="table-shell compact-table-shell"></div>
@@ -1486,6 +1486,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script src="/assets/vendor/xterm.js?v=20260425-machine-terminal-input-fix-2"></script>
-    <script type="module" src="/src/boot/main.js?v=20260426-auth-state-singleton-fix-1"></script>
+    <script type="module" src="/src/boot/main.js?v=20260517-foundation-workbench"></script>
   </body>
 </html>

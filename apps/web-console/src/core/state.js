@@ -46,6 +46,7 @@ export const state = {
   bindings: [],
   settings: [],
   cloud: {
+    workbench: null,
     summary: {
       accounts: 0,
       networks: 0,

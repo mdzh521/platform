@@ -54,7 +54,7 @@ func (s *NetworkPlanService) Delete(id uint) error {
 		return err
 	}
 	if jobCount > 0 {
-		return fmt.Errorf("请先清理引用该 Foundation Network 的 Delivery Job（共 %d 条）", jobCount)
+		return fmt.Errorf("请先清理引用该基础网络的基础交付任务（共 %d 条）", jobCount)
 	}
 
 	var resourceCount int64
@@ -62,7 +62,7 @@ func (s *NetworkPlanService) Delete(id uint) error {
 		return err
 	}
 	if resourceCount > 0 {
-		return fmt.Errorf("请先清理引用该 Foundation Network 的资源台账（共 %d 条）", resourceCount)
+		return fmt.Errorf("请先清理引用该基础网络的资源台账（共 %d 条）", resourceCount)
 	}
 
 	return s.base.db.Delete(&item).Error

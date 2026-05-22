@@ -220,6 +220,72 @@ type Summary struct {
 	Resources  int64 `json:"resources"`
 }
 
+type CloudWorkbenchView struct {
+	PayloadVersion          string                  `json:"payload_version"`
+	ModuleLabel             string                  `json:"module_label"`
+	WorkflowLabel           string                  `json:"workflow_label"`
+	Summary                 Summary                 `json:"summary"`
+	Stage                   CloudWorkbenchStage     `json:"stage"`
+	Metrics                 []CloudWorkbenchMetric  `json:"metrics"`
+	Actions                 []CloudWorkbenchAction  `json:"actions"`
+	Blockers                []CloudWorkbenchBlocker `json:"blockers"`
+	ActiveAccounts          int                     `json:"active_accounts"`
+	SucceededFoundationJobs int                     `json:"succeeded_foundation_jobs"`
+	DeliveryReadyCount      int                     `json:"delivery_ready_count"`
+	FoundationComplete      bool                    `json:"foundation_complete"`
+	BastionSucceeded        bool                    `json:"bastion_succeeded"`
+	ClusterContractReady    bool                    `json:"cluster_contract_ready"`
+	RecentJobs              []DeploymentJobView     `json:"recent_jobs"`
+	RecentResources         []CloudResourceView     `json:"recent_resources"`
+	Accounts                []CloudAccountView      `json:"accounts"`
+	NetworkPlans            []NetworkPlanView       `json:"network_plans"`
+	Blueprints              []BlueprintView         `json:"blueprints"`
+	Jobs                    []DeploymentJobView     `json:"jobs"`
+	Resources               []CloudResourceView     `json:"resources"`
+}
+
+type CloudWorkbenchStage struct {
+	Key                  string `json:"key"`
+	Label                string `json:"label"`
+	Tone                 string `json:"tone"`
+	Title                string `json:"title"`
+	Copy                 string `json:"copy"`
+	NextActionTitle      string `json:"next_action_title"`
+	NextActionCopy       string `json:"next_action_copy"`
+	PrimaryAction        string `json:"primary_action"`
+	PrimaryActionLabel   string `json:"primary_action_label"`
+	SecondaryAction      string `json:"secondary_action,omitempty"`
+	SecondaryActionLabel string `json:"secondary_action_label,omitempty"`
+	BlockerTitle         string `json:"blocker_title"`
+	BlockerCopy          string `json:"blocker_copy"`
+	LatestResultTitle    string `json:"latest_result_title"`
+	LatestResultCopy     string `json:"latest_result_copy"`
+}
+
+type CloudWorkbenchMetric struct {
+	Key   string `json:"key"`
+	Label string `json:"label"`
+	Value int64  `json:"value"`
+	Copy  string `json:"copy"`
+	Tone  string `json:"tone"`
+}
+
+type CloudWorkbenchAction struct {
+	Key     string `json:"key"`
+	Label   string `json:"label"`
+	Kind    string `json:"kind"`
+	Primary bool   `json:"primary"`
+	Enabled bool   `json:"enabled"`
+	Reason  string `json:"reason,omitempty"`
+}
+
+type CloudWorkbenchBlocker struct {
+	Title     string `json:"title"`
+	Copy      string `json:"copy"`
+	Severity  string `json:"severity"`
+	ActionKey string `json:"action_key,omitempty"`
+}
+
 type JobClaimRequest struct {
 	RunnerName string `json:"runner_name"`
 }

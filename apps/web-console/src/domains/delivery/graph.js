@@ -21,7 +21,7 @@ export async function renderProjectGraph(onRefresh = async () => {}) {
   const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
   const edges = Array.isArray(graph.edges) ? graph.edges : [];
   if (!nodes.length) {
-    elements.cloudProjectGraph.innerHTML = emptyState("当前 Project 还没有可视化节点。先从 Foundation、机器或集群创建链进入。");
+    elements.cloudProjectGraph.innerHTML = emptyState("当前 Project 还没有可视化节点。先从基础网络、机器或集群创建链进入。");
     return;
   }
 
@@ -180,7 +180,7 @@ function typeLabel(type) {
     case "stack":
       return "Stack";
     case "foundation-network":
-      return "Foundation";
+      return "基础网络";
     case "machine-asset":
       return "Machine";
     case "k8s-cluster":

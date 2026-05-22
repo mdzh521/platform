@@ -17,28 +17,25 @@ export async function loadProjectCatalog() {
 }
 
 export async function loadCloudSnapshot() {
-  const [summary, accounts, catalog, networkPlans, blueprints, jobs, resources, machineCredentials, machineAssets, machineGroups] = await Promise.all([
-    api("/api/v1/cloud/summary"),
-    api("/api/v1/cloud/accounts"),
+  const [workbenchResponse, catalog, machineCredentials, machineAssets, machineGroups] = await Promise.all([
+    api("/api/v1/cloud/workbench"),
     loadProjectCatalog(),
-    api("/api/v1/cloud/network-plans"),
-    api("/api/v1/cloud/blueprints"),
-    api("/api/v1/cloud/jobs"),
-    api("/api/v1/cloud/resources"),
     api("/api/v1/machines/credentials"),
     api("/api/v1/machines/assets?page=1&page_size=200&sort_by=updated_at&order=desc"),
     api("/api/v1/machines/groups"),
   ]);
+  const workbench = workbenchResponse.data || {};
   return {
-    summary: summary.data || {},
-    accounts: accounts.data || [],
+    workbench,
+    summary: workbench.summary || {},
+    accounts: workbench.accounts || [],
     projects: catalog.projects || [],
     environments: catalog.environments || [],
     stacks: catalog.stacks || [],
-    networkPlans: networkPlans.data || [],
-    blueprints: blueprints.data || [],
-    jobs: jobs.data || [],
-    resources: resources.data || [],
+    networkPlans: workbench.network_plans || [],
+    blueprints: workbench.blueprints || [],
+    jobs: workbench.jobs || [],
+    resources: workbench.resources || [],
     machineCredentials: machineCredentials.data || [],
     machineAssets: machineAssets.data?.items || [],
     machineGroups: machineGroups.data || [],

@@ -44,7 +44,7 @@ export function renderAccounts(onChanged) {
     const confirmed = await confirmAction({
       eyebrow: "Cloud Cleanup",
       title: "确认删除云账号",
-      copy: `将删除云账号“${item.name}”。如果该账号下还有 Foundation Network、Delivery Job 或资源台账，系统会拒绝删除。`,
+      copy: `将删除云账号“${item.name}”。如果该账号下还有基础网络、基础交付任务或资源台账，系统会拒绝删除。`,
       confirmText: "确认删除",
     });
     if (!confirmed) return;

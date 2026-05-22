@@ -10,7 +10,7 @@ async function main() {
   const indexHtml = await readFile(indexHtmlPath, "utf8");
   assert(indexHtml.includes('/src/boot/main.js'), "index.html must boot from /src/boot/main.js");
   assert(!indexHtml.includes('/assets/app/main.js'), "index.html must not boot from /assets/app/main.js");
-  for (const label of ["总览", "交付网络", "集群工作台", "机器工作台", "系统治理"]) {
+  for (const label of ["总览", "基础建设", "集群工作台", "机器工作台", "系统治理"]) {
     assert(indexHtml.includes(`>${label}<`), `index.html must include primary nav label: ${label}`);
   }
   for (const id of [

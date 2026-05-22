@@ -6,7 +6,7 @@ export function renderBlueprints() {
   if (!elements.cloudBlueprintsTable) return;
   const items = state.cloud.blueprints || [];
   if (!items.length) {
-    elements.cloudBlueprintsTable.innerHTML = emptyState("暂无 Delivery Blueprint");
+    elements.cloudBlueprintsTable.innerHTML = emptyState("暂无交付蓝图");
     return;
   }
 
@@ -22,7 +22,7 @@ export function renderBlueprints() {
     </tr>
   `).join("");
 
-  elements.cloudBlueprintsTable.innerHTML = `<table><thead><tr><th>序号</th><th>Delivery Blueprint</th><th>云平台</th><th>交付对象</th><th>版本 / 成熟度</th><th>交付能力</th><th>模板路径</th></tr></thead><tbody>${rows}</tbody></table>`;
+  elements.cloudBlueprintsTable.innerHTML = `<table><thead><tr><th>序号</th><th>交付蓝图</th><th>云平台</th><th>交付对象</th><th>版本 / 成熟度</th><th>交付能力</th><th>模板路径</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 function maturityTone(value) {
@@ -39,7 +39,7 @@ function maturityTone(value) {
 function categoryLabel(value) {
   switch (String(value || "").toLowerCase()) {
     case "network":
-      return "Foundation Network";
+      return "基础网络";
     case "compute":
       return "Ops Bastion";
     case "cluster":

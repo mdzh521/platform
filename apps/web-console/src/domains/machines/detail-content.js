@@ -76,7 +76,7 @@ function renderProjectKeyBinding(account) {
     String(item.username || "") === String(account.username || "")
   );
   if (!credential) return "";
-  const scope = credential.scope_name || credential.scope_ref || "Foundation Network";
+  const scope = credential.scope_name || credential.scope_ref || "基础网络";
   return `<p class="machine-feed-copy"><strong>项目密钥</strong> · ${escapeHtml(credential.name || "-")} · ${escapeHtml(scope)}</p>`;
 }
 

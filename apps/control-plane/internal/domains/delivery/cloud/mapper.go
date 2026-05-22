@@ -160,7 +160,7 @@ func cloudResourceToView(item CloudResource, accountName, blueprintName, network
 func buildNetworkBrief(provider string, topology any) string {
 	raw, ok := topology.(map[string]any)
 	if !ok {
-		return "Foundation Network"
+		return "基础网络"
 	}
 	roleSummary := "-"
 	if groups, ok := raw["subnet_groups"].([]any); ok && len(groups) > 0 {

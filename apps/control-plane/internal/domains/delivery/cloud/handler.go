@@ -26,6 +26,15 @@ func (h *Handler) Summary(c *gin.Context) {
 	response.JSON(c, http.StatusOK, data)
 }
 
+func (h *Handler) Workbench(c *gin.Context) {
+	data, err := h.service.Workbench.Get()
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	response.JSON(c, http.StatusOK, data)
+}
+
 func (h *Handler) ListAccounts(c *gin.Context) {
 	data, err := h.service.Accounts.List()
 	if err != nil {

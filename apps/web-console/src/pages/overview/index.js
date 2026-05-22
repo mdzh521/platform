@@ -18,7 +18,7 @@ export function renderOverviewDashboard() {
       <p>${statusCopy}</p>
     </article>
     <article class="overview-summary-card">
-      <span class="muted-label">交付网络</span>
+      <span class="muted-label">基础建设</span>
       <strong>${clusters}</strong>
       <p>已接入集群 ${clusters} 个，当前纳管工作负载 ${workloads} 个。</p>
     </article>

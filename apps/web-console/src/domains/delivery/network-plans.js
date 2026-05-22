@@ -12,7 +12,7 @@ export function renderNetworkPlans(onRefresh = async () => {}) {
   if (!elements.cloudNetworkPlansTable) return;
   const items = state.cloud.networkPlans || [];
   if (!items.length) {
-    elements.cloudNetworkPlansTable.innerHTML = emptyState("暂无 Foundation Network");
+    elements.cloudNetworkPlansTable.innerHTML = emptyState("暂无基础网络");
     return;
   }
 
@@ -35,7 +35,7 @@ function openEditNetworkPlanModal(plan, onCreated) {
 function openNetworkPlanFormModal({ plan = null, onCreated }) {
   const accounts = state.cloud.accounts || [];
   if (!accounts.length) {
-    showErrorDialog({ title: "缺少云账号", copy: "请先新增并保存一个云账号，再创建 Foundation Network。" });
+    showErrorDialog({ title: "缺少云账号", copy: "请先新增并保存一个云账号，再创建基础网络。" });
     return;
   }
   const topology = plan?.topology || {};
@@ -52,13 +52,13 @@ function openNetworkPlanFormModal({ plan = null, onCreated }) {
 
   openFormModal({
     eyebrow: "Cloud",
-    title: isEdit ? "编辑 Foundation Network" : "新增 Foundation Network",
-    copy: isEdit ? describeNetworkPlanCopy(initialProvider) : `${describeNetworkPlanCopy(initialProvider)} 保存后会自动创建并执行 Foundation 交付任务。`,
-    submitText: isEdit ? "保存网络方案" : "创建并执行 Foundation",
+    title: isEdit ? "编辑基础网络" : "新增基础网络",
+    copy: isEdit ? describeNetworkPlanCopy(initialProvider) : `${describeNetworkPlanCopy(initialProvider)} 保存后会自动创建并执行基础交付任务。`,
+    submitText: isEdit ? "保存网络方案" : "创建并执行基础交付",
     fields: [
       { label: "预置模板", name: "preset_template", type: "select", value: initialPreset, options: presetOptions(initialProvider) },
       { type: "note", copy: templateCatalogCopy(initialProvider, initialPreset) },
-      { label: "Foundation 名称", name: "name", required: true, value: plan?.name || "" },
+      { label: "基础网络名称", name: "name", required: true, value: plan?.name || "" },
       { label: "云平台", name: "provider", type: "select", value: initialProvider, options: providerOptions(accounts) },
       { label: "云账号", name: "account_id", type: "select", value: String(plan?.account_id || defaultAccount.id), options: accountOptions(initialAccounts) },
       { label: "Project", name: "project_id", type: "select", value: initialProjectID, options: projectOptions },
@@ -98,13 +98,13 @@ function openNetworkPlanFormModal({ plan = null, onCreated }) {
       if (isEdit) {
         await updateNetworkPlan(plan.id, payload);
         await onCreated();
-        toast("Foundation Network 已更新");
+        toast("基础网络已更新");
       } else {
         const response = await createNetworkPlan(payload);
         const createdPlan = response?.data;
         await createFoundationExecutionForPlan(payload, createdPlan);
         await onCreated();
-        toast("Foundation Network 已创建，并已自动发起执行");
+        toast("基础网络已创建，并已自动发起执行");
       }
     },
     onOpen: (form) => {
@@ -160,7 +160,7 @@ async function createFoundationExecutionForPlan(payload, plan) {
   const provider = normalizeProvider(payload.provider);
   const blueprint = findFoundationBlueprint(provider);
   if (!blueprint || !plan?.id) {
-    throw new Error("未找到可执行的 Foundation Blueprint");
+    throw new Error("未找到可执行的基础网络蓝图");
   }
   const action = supportsApply(blueprint) ? "apply" : "plan";
   await createDeploymentJob({
@@ -474,14 +474,14 @@ function bindNetworkPlanActions() {
       if (!plan) return;
       const confirmed = await confirmAction({
         eyebrow: "Cloud Cleanup",
-        title: "确认删除 Foundation Network",
-        copy: `将删除 Foundation Network“${plan.name}”。如果仍有关联的 Delivery Job 或资源台账，系统会拒绝删除。`,
+        title: "确认删除基础网络",
+        copy: `将删除基础网络“${plan.name}”。如果仍有关联的 基础交付任务或资源台账，系统会拒绝删除。`,
         confirmText: "确认删除",
       });
       if (!confirmed) return;
       await deleteNetworkPlan(plan.id);
       await refreshNetworkPlans();
-      toast(`Foundation Network ${plan.name} 已删除`);
+      toast(`基础网络 ${plan.name} 已删除`);
     });
   });
   elements.cloudNetworkPlansTable.querySelectorAll("[data-network-plan-key-manage]").forEach((button) => {
@@ -501,8 +501,8 @@ function openNetworkPlanDetailModal(networkPlanID) {
   const deliveryActions = buildNetworkDeliveryActions(networkPlanID, provider);
 
   openFormModal({
-    eyebrow: "Foundation Network",
-    title: `Foundation Network 详情 · ${plan.name || `#${networkPlanID}`}`,
+    eyebrow: "基础网络",
+    title: `基础网络详情 · ${plan.name || `#${networkPlanID}`}`,
     copy: `${plan.account_name || "-"} · ${plan.provider || "-"} · ${plan.region || "-"} · 创建于 ${formatDateTime(plan.created_at)}`,
     submitText: false,
     fields: [
@@ -511,9 +511,9 @@ function openNetworkPlanDetailModal(networkPlanID) {
         actions: [
           ...deliveryActions,
           { label: "密钥管理", shortcut: `network-key:${networkPlanID}` },
-          { label: "创建通用 Delivery Job", shortcut: `create-job-with-network:${networkPlanID}` },
+          { label: "创建通用基础交付任务", shortcut: `create-job-with-network:${networkPlanID}` },
           { label: "查看 Resources", shortcut: "scroll-resources" },
-          { label: "返回 Foundation 列表", shortcut: "scroll-networks" },
+          { label: "返回基础网络列表", shortcut: "scroll-networks" },
         ],
       },
       {
@@ -523,7 +523,7 @@ function openNetworkPlanDetailModal(networkPlanID) {
         copy: `VPC：${plan.vpc_cidr || "-"} ｜ 环境：${topology.environment || "-"} ｜ 命名代号：${topology.vpc_name || "-"} ｜ NAT：${topology.nat_gateway_count ?? "-"}`,
       },
       {
-        label: "Foundation 引用契约",
+        label: "基础网络引用契约",
         name: "foundation_refs_json",
         type: "textarea",
         rows: 12,
@@ -605,7 +605,7 @@ export function openNetworkKeyModal(networkPlanID) {
   if (!plan) return;
   const account = (state.cloud.accounts || []).find((item) => Number(item.id) === Number(plan.account_id || 0));
   if (!account) {
-    showErrorDialog({ title: "缺少云账号", copy: "当前 Foundation Network 没有绑定有效云账号。" });
+    showErrorDialog({ title: "缺少云账号", copy: "当前基础网络没有绑定有效云账号。" });
     return;
   }
   const provider = normalizeProvider(plan.provider);
@@ -621,14 +621,14 @@ export function openNetworkKeyModal(networkPlanID) {
   openFormModal({
     eyebrow: "Cloud Key",
     title: `密钥管理 · ${plan.name}`,
-    copy: `当前作用域：${plan.account_name || "-"} · ${providerLabel(provider)} · ${plan.region || account.region || "-"}。建议在每条 Foundation Network 下维护项目级密钥，后续创建服务器和 Bastion 时直接复用。`,
+    copy: `当前作用域：${plan.account_name || "-"} · ${providerLabel(provider)} · ${plan.region || account.region || "-"}。建议在每条基础网络下维护项目级密钥，后续创建服务器和 Bastion 时直接复用。`,
     submitText: "保存密钥",
     fields: [
       {
         type: "section",
         eyebrow: "Scope",
-        label: "Foundation 范围",
-        copy: `Foundation Network：${plan.name} ｜ 项目标识：${projectName} ｜ 环境：${environment}`,
+        label: "基础网络范围",
+        copy: `基础网络：${plan.name} ｜ 项目标识：${projectName} ｜ 环境：${environment}`,
       },
       {
         label: "密钥来源",
@@ -653,7 +653,7 @@ export function openNetworkKeyModal(networkPlanID) {
         name: "bastion_asset_id",
         type: "select",
         value: bastionOptions[0]?.value || "",
-        options: [{ value: "", label: bastionOptions.length ? "不绑定 Bastion，只存到机器管理凭据库" : "当前 Foundation 下还没有可绑定的 Ops Bastion，仍可先保存到机器管理凭据库" }, ...bastionOptions],
+        options: [{ value: "", label: bastionOptions.length ? "不绑定 Bastion，只存到机器管理凭据库" : "当前基础网络下还没有可绑定的 Ops Bastion，仍可先保存到机器管理凭据库" }, ...bastionOptions],
       },
       {
         type: "section",
@@ -929,7 +929,7 @@ function renderProjectCredentialSummary(credentials) {
           <strong>当前项目密钥</strong>
           <span class="muted-label">0 把</span>
         </div>
-        <p>当前这条 Foundation Network 还没有维护项目级密钥。建议先在这里创建，再给服务器和 Ops Bastion 复用。</p>
+        <p>当前这条基础网络还没有维护项目级密钥。建议先在这里创建，再给服务器和 Ops Bastion 复用。</p>
       </div>
     `;
   }
@@ -1063,8 +1063,8 @@ function defaultVPCCIDR(provider) {
 
 function describeNetworkPlanCopy(provider) {
   return normalizeProvider(provider) === "alicloud"
-    ? "阿里云 Foundation Network 采用 VPC + 交换机设计。请优先使用 role + traffic_profile 表达，例如 SLB 入口、ACK 节点、ACK Pod、应用、数据库、运维接入，而不是默认使用 public/private。若当前还没有阿里云账号，先到“云账号”里新增。"
-    : "这版 Foundation Network 支持按子网角色批量命名。用“角色 | tier | CIDR列表”定义公网入口、中间件、数据库、K8s、运维等子网，后续模板会自动生成子网名称。若当前还没有 AWS 账号，先到“云账号”里新增。";
+    ? "阿里云基础网络采用 VPC + 交换机设计。请优先使用 role + traffic_profile 表达，例如 SLB 入口、ACK 节点、ACK Pod、应用、数据库、运维接入，而不是默认使用 public/private。若当前还没有阿里云账号，先到“云账号”里新增。"
+    : "这版基础网络支持按子网角色批量命名。用“角色 | tier | CIDR列表”定义公网入口、中间件、数据库、K8s、运维等子网，后续模板会自动生成子网名称。若当前还没有 AWS 账号，先到“云账号”里新增。";
 }
 
 function renderNetworkPlanFormMeta(form, provider) {

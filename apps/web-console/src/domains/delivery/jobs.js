@@ -26,7 +26,7 @@ export function renderJobs(onRefresh = async () => {}) {
         <details class="resource-job-details">
           <summary class="resource-job-summary">
             <div class="resource-job-summary-main">
-              <span class="muted-label">#${index + 1} · ${escapeHtml(item.blueprint_name || "Delivery Job")} · ${escapeHtml(item.account_name || "-")}</span>
+              <span class="muted-label">#${index + 1} · ${escapeHtml(item.blueprint_name || "基础交付任务")} · ${escapeHtml(item.account_name || "-")}</span>
               <strong>${escapeHtml(item.name)}</strong>
               <p>${escapeHtml(statusLabel(item.status))} · ${escapeHtml(actionLabel(item.action))} · ${escapeHtml(item.provider)} · ${escapeHtml(item.network_plan || "-")}</p>
               <p class="table-meta">${escapeHtml(renderScopeSummary({ projectID: item.project_id, environmentID: item.environment_id, stackID: item.stack_id }))}</p>
@@ -49,7 +49,7 @@ export function renderJobs(onRefresh = async () => {}) {
             </div>
             <div class="table-inline-grid">
               <article>
-                <span class="muted-label">Foundation</span>
+                <span class="muted-label">基础网络</span>
                 <strong>${escapeHtml(item.network_plan || "-")}</strong>
                 <p>${escapeHtml(item.provider || "-")} · ${escapeHtml(item.account_name || "-")}</p>
               </article>
@@ -84,11 +84,11 @@ export function openCreateDeploymentJobModal(onCreated, options = {}) {
   const networks = state.cloud.networkPlans || [];
   const deliveryBlueprints = blueprints.filter((item) => String(item.category || "").toLowerCase() !== "network");
   if (!accounts.length || !deliveryBlueprints.length) {
-    showErrorDialog({ title: "缺少基础数据", copy: "请先确认云账号和下游 Delivery Blueprint 已准备完成。" });
+    showErrorDialog({ title: "缺少基础数据", copy: "请先确认云账号和下游交付蓝图 已准备完成。" });
     return;
   }
   if (!networks.length) {
-    showErrorDialog({ title: "缺少 Foundation Network", copy: "请先创建并执行至少一条 Foundation Network，然后再创建 Delivery Job。" });
+    showErrorDialog({ title: "缺少基础网络", copy: "请先创建并执行至少一条基础网络，然后再创建基础交付任务。" });
     return;
   }
 
@@ -112,11 +112,11 @@ export function openCreateDeploymentJobModal(onCreated, options = {}) {
   }
   openFormModal({
     eyebrow: "Cloud",
-    title: "创建 Delivery Job",
-    copy: `${describeJobCopy(initialProvider)} 当前 Delivery Job 会直接继承 Foundation Network 的云平台、云账号和基础网络输入；你主要只需要确认交付对象和执行动作。不同 provider、账号、环境不会在这里混用。`,
+    title: "创建基础交付任务",
+    copy: `${describeJobCopy(initialProvider)} 当前基础交付任务会直接继承基础网络的云平台、云账号和基础网络输入；你主要只需要确认交付对象和执行动作。不同 provider、账号、环境不会在这里混用。`,
     fields: [
-      { label: "Delivery Job 名称", name: "name", required: true },
-      { label: "Foundation Network", name: "network_plan_id", type: "select", value: defaultNetwork ? String(defaultNetwork.id) : "", options: networkOptions(networks) },
+      { label: "基础交付任务名称", name: "name", required: true },
+      { label: "基础网络", name: "network_plan_id", type: "select", value: defaultNetwork ? String(defaultNetwork.id) : "", options: networkOptions(networks) },
       { label: "云平台", name: "provider", type: "select", value: initialProvider, options: providerOptions(blueprints), disabled: true },
       { label: "云账号", name: "account_id", type: "select", value: String(defaultAccount?.id || ""), options: accountOptions(defaultAccount ? [defaultAccount] : []), disabled: true },
       { label: "Project", name: "project_id", type: "select", value: String(defaultNetwork?.project_id || ""), options: projectOptions() },
@@ -154,15 +154,15 @@ export function openCreateDeploymentJobModal(onCreated, options = {}) {
 
       const selectedNetwork = (state.cloud.networkPlans || []).find((item) => String(item.id) === String(form.get("network_plan_id")));
       if (!selectedNetwork) {
-        throw new Error("请选择有效的 Foundation Network");
+        throw new Error("请选择有效的基础网络");
       }
       const selectedAccount = (state.cloud.accounts || []).find((item) => Number(item.id) === Number(selectedNetwork.account_id || 0));
       if (!selectedAccount) {
-        throw new Error("当前 Foundation Network 未绑定有效云账号");
+        throw new Error("当前基础网络未绑定有效云账号");
       }
       const selectedBlueprint = (state.cloud.blueprints || []).find((item) => Number(item.id) === Number(form.get("blueprint_id")));
       if (!selectedBlueprint) {
-        throw new Error("请选择有效的 Delivery Blueprint");
+        throw new Error("请选择有效的交付蓝图");
       }
 
       await createDeploymentJob({
@@ -178,7 +178,7 @@ export function openCreateDeploymentJobModal(onCreated, options = {}) {
         input: parsedInput,
       });
       await onCreated();
-      toast("Delivery Job 已创建");
+      toast("基础交付任务已创建");
     },
     onOpen: (form) => bindDeploymentJobProvider(form, { accounts, blueprints, networks, preferredBlueprintCode: options.preselectedBlueprintCode }),
   });
@@ -190,14 +190,14 @@ export function openCreateServerDeliveryModal(onCreated, options = {}) {
   const blueprints = state.cloud.blueprints || [];
   const network = networks.find((item) => Number(item.id) === Number(options.preselectedNetworkId || 0)) || networks[0];
   if (!network) {
-    showErrorDialog({ title: "缺少 Foundation Network", copy: "请先创建并执行至少一条 Foundation Network。" });
+    showErrorDialog({ title: "缺少基础网络", copy: "请先创建并执行至少一条基础网络。" });
     return;
   }
   const provider = normalizeProvider(network.provider);
 
   const account = accounts.find((item) => Number(item.id) === Number(network.account_id || 0));
   if (!account) {
-    showErrorDialog({ title: "缺少云账号", copy: "当前 Foundation Network 未绑定有效云账号。" });
+    showErrorDialog({ title: "缺少云账号", copy: "当前基础网络未绑定有效云账号。" });
     return;
   }
 
@@ -220,19 +220,19 @@ export function openCreateServerDeliveryModal(onCreated, options = {}) {
   const initialInput = options.initialInput || {};
 
   openFormModal({
-    eyebrow: "Server Delivery",
+    eyebrow: "服务器基础交付",
     title: `${existingJobID ? "调整服务器配置" : "创建服务器"} · ${network.name}`,
     copy: existingJobID
       ? "当前会直接修改这条已有服务器任务的执行输入，并在同一个任务上重新发起 apply 或 destroy。"
-      : "当前服务器创建会直接绑定到选中的 Foundation Network。云平台、账号、区域、VPC 都继承自这条网络，避免不同环境串在一起。",
+      : "当前服务器创建会直接绑定到选中的基础网络。云平台、账号、区域、VPC 都继承自这条网络，避免不同环境串在一起。",
     submitText: existingJobID ? "保存并重新执行" : "创建服务器任务",
     panelClass: "modal-panel-wide",
     fields: [
       {
         type: "section",
         eyebrow: "Context",
-        label: "交付上下文",
-        copy: `Foundation Network：${network.name} ｜ Provider：${String(network.provider || "-").toUpperCase()} ｜ 账号：${account.name} ｜ 区域：${network.region || account.region || "-"}`,
+        label: "基础交付上下文",
+        copy: `基础网络：${network.name} ｜ Provider：${String(network.provider || "-").toUpperCase()} ｜ 账号：${account.name} ｜ 区域：${network.region || account.region || "-"}`,
       },
       {
         type: "custom",
@@ -286,7 +286,7 @@ export function openCreateServerDeliveryModal(onCreated, options = {}) {
         confirmed = await confirmAction({
           eyebrow: "Cloud Safety",
           title: "确认执行真实 Apply",
-          copy: `这会在当前 Foundation Network 对应的${provider === "alicloud" ? "阿里云 VPC / vSwitch" : "AWS VPC / Subnet"}中真实创建服务器，可能产生费用。`,
+          copy: `这会在当前基础网络对应的${provider === "alicloud" ? "阿里云 VPC / vSwitch" : "AWS VPC / Subnet"}中真实创建服务器，可能产生费用。`,
           confirmText: "确认 Apply",
         });
         if (!confirmed) return;
@@ -423,18 +423,18 @@ function resolveDefaultBlueprint({ preferredCode, provider, deliveryBlueprints, 
 }
 
 function buildMissingBlueprintCopy(preferredCode, network) {
-  const networkName = network?.name || "当前 Foundation Network";
+  const networkName = network?.name || "当前基础网络";
   switch (String(preferredCode || "").toLowerCase()) {
     case "aws-ec2-server":
-      return `${networkName} 当前没有可用的“服务器创建”蓝图。请先确认使用的是 AWS Foundation Network，或者改用通用 Delivery Job。`;
+      return `${networkName} 当前没有可用的“服务器创建”蓝图。请先确认使用的是 AWS 基础网络，或者改用通用基础交付任务。`;
     case "aws-bastion":
     case "alicloud-bastion":
-      return `${networkName} 当前没有可用的“Ops Bastion”蓝图。请改用通用 Delivery Job，或先补齐对应 provider 的 Bastion 蓝图。`;
+      return `${networkName} 当前没有可用的“Ops Bastion”蓝图。请改用通用基础交付任务，或先补齐对应 provider 的 Bastion 蓝图。`;
     case "aws-eks-quickstart":
     case "alicloud-ack-quickstart":
-      return `${networkName} 当前没有可用的 Cluster 蓝图。请改用通用 Delivery Job，或先补齐对应 provider 的 Cluster 蓝图。`;
+      return `${networkName} 当前没有可用的 Cluster 蓝图。请改用通用基础交付任务，或先补齐对应 provider 的 Cluster 蓝图。`;
     default:
-      return `${networkName} 当前没有匹配的 Delivery Blueprint。`;
+      return `${networkName} 当前没有匹配的 交付蓝图。`;
   }
 }
 
@@ -656,7 +656,7 @@ function enrollmentTone(status) {
 function resourceCategoryLabel(value) {
   switch (String(value || "").toLowerCase()) {
     case "network":
-      return "Foundation Network";
+      return "基础网络";
     case "compute":
       return "Compute";
     case "cluster":
@@ -679,7 +679,7 @@ export async function openDeploymentJobDetailModal(jobID) {
 
   openFormModal({
     eyebrow: "Cloud",
-    title: `Delivery Job 详情 · ${job.name || `#${jobID}`}`,
+    title: `基础交付任务详情 · ${job.name || `#${jobID}`}`,
     copy: `${job.blueprint_name || "-"} · ${job.account_name || "-"} · ${statusLabel(job.status || "-")} · ${renderScopeSummary({ projectID: job.project_id, environmentID: job.environment_id, stackID: job.stack_id })}`,
     submitText: false,
     fields: [
@@ -687,7 +687,7 @@ export async function openDeploymentJobDetailModal(jobID) {
         type: "actions",
         actions: jobDetailActions(job),
       },
-      { label: "执行概览", type: "section", eyebrow: "Overview", copy: `动作：${actionLabel(job.action || "-")} ｜ Foundation Network：${job.network_plan || "-"} ｜ 归属：${renderScopeSummary({ projectID: job.project_id, environmentID: job.environment_id, stackID: job.stack_id })} ｜ Runner：${job.runner_name || "-"} ｜ Resource Inventory：${resourceSyncStatusLabel(job.resource_sync_status || "-")}` },
+      { label: "执行概览", type: "section", eyebrow: "Overview", copy: `动作：${actionLabel(job.action || "-")} ｜ 基础网络：${job.network_plan || "-"} ｜ 归属：${renderScopeSummary({ projectID: job.project_id, environmentID: job.environment_id, stackID: job.stack_id })} ｜ Runner：${job.runner_name || "-"} ｜ Resource Inventory：${resourceSyncStatusLabel(job.resource_sync_status || "-")}` },
       { label: "执行输入", name: "input_json", type: "textarea", rows: 12, readOnly: true, value: JSON.stringify(job.input || {}, null, 2) },
       { label: "执行摘要", name: "plan_summary_json", type: "textarea", rows: 12, readOnly: true, value: JSON.stringify(job.plan_summary || {}, null, 2) },
       { label: "Resource Inventory 条目", name: "resources_json", type: "textarea", rows: 10, readOnly: true, value: JSON.stringify(job.resources || [], null, 2) },
@@ -718,7 +718,7 @@ export async function openDeploymentJobSummaryModal(jobID) {
         type: "section",
         eyebrow: "Overview",
         label: "执行概览",
-        copy: `Foundation：${job.network_plan || "-"} ｜ 资源 ${Array.isArray(job.resources) ? job.resources.length : 0} 条 ｜ Runner：${job.runner_name || "-"} ｜ 创建于 ${formatDateTime(job.created_at)}`,
+        copy: `基础网络：${job.network_plan || "-"} ｜ 资源 ${Array.isArray(job.resources) ? job.resources.length : 0} 条 ｜ Runner：${job.runner_name || "-"} ｜ 创建于 ${formatDateTime(job.created_at)}`,
       },
       {
         label: "关键信息",
@@ -756,7 +756,7 @@ function jobDetailActions(job) {
     { label: "查看 Resources", shortcut: "scroll-resources", tone: "primary" },
     { label: "返回 Recent Jobs", shortcut: "scroll-jobs" },
   ];
-  if (blueprintName.includes("foundation network") && networkPlanID) {
+  if ((blueprintName.includes("基础网络") || blueprintName.includes("foundation network")) && networkPlanID) {
     if (provider === "aws") {
       actions.unshift({ label: "创建服务器", shortcut: `create-server-with-network:${networkPlanID}`, tone: "primary" });
     }
@@ -838,7 +838,7 @@ function formatJobSummaryText(job) {
   const lines = [
     `状态: ${statusLabel(job.status || "-")}`,
     `动作: ${actionLabel(job.action || "-")}`,
-    `Foundation Network: ${job.network_plan || "-"}`,
+    `基础网络: ${job.network_plan || "-"}`,
     `蓝图: ${job.blueprint_name || "-"}`,
     `云账号: ${job.account_name || "-"}`,
     `云平台: ${job.provider || "-"}`,
@@ -917,17 +917,17 @@ function renderServerWizardForm({ network, account, provider, defaultProject, de
         ${escapeHtml(item.label)}
       </label>
     `).join("")
-    : `<span class="muted-label">当前没有可复用的子网输出，请先确认 Foundation Network 已成功执行并产出 subnet outputs。</span>`;
+    : `<span class="muted-label">当前没有可复用的子网输出，请先确认基础网络已成功执行并产出 subnet outputs。</span>`;
 
   return `
     <div class="form-grid">
       <div class="form-section-heading field-span-2">
         <span class="eyebrow">Context</span>
-        <strong>当前交付上下文</strong>
-        <p>当前服务器会固定创建在这条 Foundation Network 下，不会串到别的云账号、区域或 VPC。</p>
+        <strong>当前基础交付上下文</strong>
+        <p>当前服务器会固定创建在这条基础网络下，不会串到别的云账号、区域或 VPC。</p>
       </div>
       <label>
-        <span>Foundation Network</span>
+        <span>基础网络</span>
         <input value="${escapeHtml(network.name)}" readonly />
       </label>
       <label>
@@ -1127,7 +1127,7 @@ function renderServerWizardForm({ network, account, provider, defaultProject, de
       <div class="form-section-heading field-span-2">
         <span class="eyebrow">Placement</span>
         <strong>子网与接入策略</strong>
-        <p>默认固定到当前 Foundation Network 的 VPC。多台机器时，会按你勾选的子网轮询分布。</p>
+        <p>默认固定到当前基础网络的 VPC。多台机器时，会按你勾选的子网轮询分布。</p>
       </div>
       <label class="field-span-2">
         <span>允许接入 CIDR</span>
@@ -1153,13 +1153,13 @@ function renderServerWizardForm({ network, account, provider, defaultProject, de
       <div class="form-section-heading field-span-2">
         <span class="eyebrow">SSH Key</span>
         <strong>密钥处理</strong>
-        <p>密钥就在这里创建或录入。你可以直接使用现有 Key Pair、复用当前 Foundation 的项目密钥，或者手工录入私钥内容。${supportsCloudKeyCreate ? `也可以直接在 ${providerLabel} 里创建一把新密钥。` : `${providerLabel} 这轮先不支持在平台里直接创建云上密钥。`}若需要后续经堡垒机使用，可选择把这把私钥录入机器凭据库。</p>
+        <p>密钥就在这里创建或录入。你可以直接使用现有 Key Pair、复用当前基础网络的项目密钥，或者手工录入私钥内容。${supportsCloudKeyCreate ? `也可以直接在 ${providerLabel} 里创建一把新密钥。` : `${providerLabel} 这轮先不支持在平台里直接创建云上密钥。`}若需要后续经堡垒机使用，可选择把这把私钥录入机器凭据库。</p>
       </div>
       <label>
         <span>密钥方式</span>
         <select name="key_strategy">
           <option value="existing" selected>使用已有 Key Pair</option>
-          <option value="project_credential">使用当前 Foundation 已有项目密钥</option>
+          <option value="project_credential">使用当前基础网络已有项目密钥</option>
           <option value="create_cloud">在${providerLabel}创建新密钥</option>
           <option value="manual">手工录入私钥</option>
         </select>
@@ -1189,7 +1189,7 @@ function renderServerWizardForm({ network, account, provider, defaultProject, de
       <label>
         <span>目标 Ops Bastion</span>
         <select name="bastion_asset_id">
-          <option value="">${bastionOptions.length ? "请选择要同步密钥的 Ops Bastion" : "当前 Foundation 下还没有 Ops Bastion 资产"}</option>
+          <option value="">${bastionOptions.length ? "请选择要同步密钥的 Ops Bastion" : "当前基础网络下还没有 Ops Bastion 资产"}</option>
           ${bastionOptions.map((item) => `<option value="${escapeHtml(item.value)}">${escapeHtml(item.label)}</option>`).join("")}
         </select>
       </label>
@@ -1418,7 +1418,7 @@ function bindServerWizardForm(form, { account, network, provider, placementOptio
       }
       syncKeyMode();
       updateServerPreview();
-      toast("已带入当前 Foundation 的项目密钥");
+      toast("已带入当前基础网络的项目密钥");
     } catch (error) {
       await showErrorDialog({ title: "读取项目密钥失败", copy: error?.message || "请稍后重试" });
     }
@@ -2361,7 +2361,7 @@ function bindDeploymentJobProvider(form, datasets) {
   const syncFromNetwork = () => {
     const selectedNetwork = (datasets.networks || []).find((item) => String(item.id) === String(networkField.value));
     if (!selectedNetwork) {
-      showErrorDialog({ title: "缺少 Foundation Network", copy: "请先选择有效的 Foundation Network。" });
+      showErrorDialog({ title: "缺少基础网络", copy: "请先选择有效的基础网络。" });
       return;
     }
     const provider = normalizeProvider(selectedNetwork.provider);
@@ -2395,7 +2395,7 @@ function bindDeploymentJobProvider(form, datasets) {
     syncInputJSON(currentBlueprint, selectedAccount, selectedNetwork);
     const copyNode = form.closest(".modal-panel")?.querySelector(".modal-copy");
     if (copyNode) {
-      copyNode.textContent = `${describeJobCopy(provider)} 当前会直接引用 Foundation Network「${selectedNetwork.name}」的账号和网络上下文。`;
+      copyNode.textContent = `${describeJobCopy(provider)} 当前会直接引用基础网络「${selectedNetwork.name}」的账号和网络上下文。`;
     }
   };
 
@@ -2462,8 +2462,8 @@ function normalizeProvider(value) {
 
 function describeJobCopy(provider) {
   return normalizeProvider(provider) === "alicloud"
-    ? "当前 Delivery Job 会围绕阿里云 Foundation Network 生成执行输入。绑定 Foundation Network 后，系统会自动带入 role-based refs；真正 Apply 前仍需要补全蓝图要求的云侧对象 ID。"
-    : "当前 Delivery Job 会围绕 AWS Foundation Network 生成执行输入。绑定 Foundation Network 后，系统会自动带入 role-based refs；若已有成功的 foundation outputs，会自动补全 Ops Bastion 所需的 VPC / Subnet ID。";
+    ? "当前基础交付任务会围绕阿里云基础网络生成执行输入。绑定基础网络后，系统会自动带入 role-based refs；真正 Apply 前仍需要补全蓝图要求的云侧对象 ID。"
+    : "当前基础交付任务会围绕 AWS 基础网络生成执行输入。绑定基础网络后，系统会自动带入 role-based refs；若已有成功的基础网络 outputs，会自动补全 Ops Bastion 所需的 VPC / Subnet ID。";
 }
 
 function resolveFoundationNetworkIDs(network, provider, mode = "ops") {
@@ -2590,7 +2590,7 @@ function blueprintMaturityCopy(blueprint) {
     return `${blueprint.name} 当前成熟度：${maturity}。允许 Plan / Apply / Destroy，真实执行仍需要显式确认。`;
   }
   if (supportsApply(blueprint)) {
-    return `${blueprint.name} 当前成熟度：${maturity}。允许 Plan / Apply；Destroy 仍未放开。绑定 Foundation Network 后会自动带入 foundation refs。`;
+    return `${blueprint.name} 当前成熟度：${maturity}。允许 Plan / Apply；Destroy 仍未放开。绑定基础网络后会自动带入基础网络 refs。`;
   }
   return `${blueprint.name} 当前成熟度：${maturity}。当前只允许 Plan，不允许 Apply / Destroy。`;
 }

@@ -114,7 +114,7 @@ func (s *AccountService) Delete(id uint) error {
 		return err
 	}
 	if networkCount > 0 {
-		return fmt.Errorf("请先删除该账号下的 Foundation Network（共 %d 条）", networkCount)
+		return fmt.Errorf("请先删除该账号下的基础网络（共 %d 条）", networkCount)
 	}
 
 	var jobCount int64
@@ -122,7 +122,7 @@ func (s *AccountService) Delete(id uint) error {
 		return err
 	}
 	if jobCount > 0 {
-		return fmt.Errorf("请先清理该账号下的 Delivery Job（共 %d 条）", jobCount)
+		return fmt.Errorf("请先清理该账号下的基础交付任务（共 %d 条）", jobCount)
 	}
 
 	var resourceCount int64

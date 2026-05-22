@@ -9,6 +9,7 @@ type Service struct {
 	Deployments *DeploymentService
 	Resources   *ResourceService
 	Addons      *AddonService
+	Workbench   *WorkbenchService
 }
 
 type SummaryOperations interface {
@@ -22,15 +23,27 @@ type BlueprintOperations interface {
 
 func NewService(base *Dependencies, summary SummaryOperations, blueprints BlueprintOperations) *Service {
 	core := newBaseService(base)
+	accounts := &AccountService{base: core}
+	networks := &NetworkPlanService{base: core}
+	deployments := &DeploymentService{base: core}
+	resources := &ResourceService{base: core}
 	service := &Service{
 		base:        core,
 		Summary:     summary,
-		Accounts:    &AccountService{base: core},
-		Networks:    &NetworkPlanService{base: core},
+		Accounts:    accounts,
+		Networks:    networks,
 		Blueprints:  blueprints,
-		Deployments: &DeploymentService{base: core},
-		Resources:   &ResourceService{base: core},
+		Deployments: deployments,
+		Resources:   resources,
 		Addons:      &AddonService{base: core},
+		Workbench: &WorkbenchService{
+			summary:     summary,
+			accounts:    accounts,
+			networks:    networks,
+			blueprints:  blueprints,
+			deployments: deployments,
+			resources:   resources,
+		},
 	}
 	if service.Blueprints != nil {
 		service.Blueprints.EnsureDefaultBlueprints()

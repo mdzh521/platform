@@ -171,6 +171,7 @@ func NewRouter(dep Dependencies) *gin.Engine {
 		protected.GET("/graph/projects/:id", dep.GraphHandler.GetProjectGraph)
 
 		protected.GET("/cloud/summary", dep.CloudHandler.Summary)
+		protected.GET("/cloud/workbench", dep.CloudHandler.Workbench)
 		protected.GET("/cloud/accounts", dep.CloudHandler.ListAccounts)
 		protected.POST("/cloud/accounts", dep.CloudHandler.CreateAccount)
 		protected.POST("/cloud/accounts/:id/test", dep.CloudHandler.TestAccount)

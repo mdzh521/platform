@@ -10,7 +10,7 @@ export function renderResources() {
     </div>
     <div class="action-row compact-action-row">
       <button type="button" class="ghost-button" data-cloud-shortcut="scroll-jobs">返回任务卡片</button>
-      <button type="button" class="ghost-button" data-cloud-shortcut="scroll-networks">返回 Foundation Networks</button>
+      <button type="button" class="ghost-button" data-cloud-shortcut="scroll-networks">返回基础网络</button>
     </div>
   `;
 }
